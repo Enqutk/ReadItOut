@@ -21,9 +21,14 @@ export default async function handler(req, res) {
   }
 
   const initData = req.headers['x-telegram-init-data'] || req.body?.initData || '';
+  const apiSecret = req.headers['x-admin-secret'] || req.body?.adminSecret || '';
+  const secretValid = process.env.ADMIN_API_SECRET && apiSecret === process.env.ADMIN_API_SECRET;
   const user = validateInitData(initData, process.env.BOT_TOKEN);
-  if (!user || !isAdmin(user.id)) {
-    return res.status(403).json({ error: 'Admin only' });
+  const isAuth = secretValid || (user && isAdmin(user.id));
+  if (!isAuth) {
+    return res.status(403).json({
+      error: !initData ? 'Open dashboard from Telegram app, or set ADMIN_API_SECRET to save from browser.' : 'Admin only.',
+    });
   }
 
   if (req.method === 'GET') {

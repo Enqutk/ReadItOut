@@ -14,6 +14,7 @@ export default function Dashboard() {
   const [rejectingId, setRejectingId] = useState(null);
   const [rejectReason, setRejectReason] = useState('');
   const [initData, setInitData] = useState('');
+  const [adminSecret, setAdminSecret] = useState('');
   const [config, setConfig] = useState({ socialLinks: {}, popup: null });
   const [configSaving, setConfigSaving] = useState(false);
 
@@ -40,21 +41,21 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    if (activeFilter === 'settings' && initData) {
-      fetch('/api/admin/app-config', {
-        method: 'GET',
-        headers: { 'X-Telegram-Init-Data': initData },
-      })
+    if (activeFilter === 'settings') {
+      fetch('/api/app-config')
         .then((r) => r.json())
         .then((data) => {
+          const p = data.popup;
           setConfig({
             socialLinks: data.socialLinks || {},
-            popup: data.popup || { id: '1', title: '', message: '', link: '', linkLabel: 'Learn more', enabled: false },
+            popup: p
+              ? { ...p, enabled: !!p.enabled }
+              : { id: '1', title: '', message: '', link: '', linkLabel: 'Learn more', enabled: false },
           });
         })
         .catch(() => {});
     }
-  }, [activeFilter, initData]);
+  }, [activeFilter]);
 
   const counts = { pending: 0, approved: 0, rejected: 0 };
   stories.forEach((s) => {
@@ -157,37 +158,40 @@ export default function Dashboard() {
   };
 
   const handleSaveConfig = async () => {
-    if (!initData) {
-      alert('Open the dashboard from the Telegram app to save settings.');
+    if (!initData && !adminSecret.trim()) {
+      alert('Open from Telegram app, or enter Admin Secret below.');
       return;
     }
     setConfigSaving(true);
     try {
+      const headers = { 'Content-Type': 'application/json' };
+      if (initData) headers['X-Telegram-Init-Data'] = initData;
+      if (adminSecret.trim()) headers['X-Admin-Secret'] = adminSecret.trim();
+      const body = {
+        socialLinks: config.socialLinks,
+        popup: config.popup
+          ? {
+              enabled: !!config.popup.enabled,
+              id: config.popup.id || '1',
+              title: config.popup.title || '',
+              message: config.popup.message || '',
+              link: config.popup.link || '',
+              linkLabel: config.popup.linkLabel || 'Learn more',
+            }
+          : { enabled: false, id: '1', title: '', message: '', link: '', linkLabel: 'Learn more' },
+      };
+      if (initData) body.initData = initData;
+      if (adminSecret.trim()) body.adminSecret = adminSecret.trim();
       const res = await fetch('/api/admin/app-config', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Telegram-Init-Data': initData,
-        },
-        body: JSON.stringify({
-          socialLinks: config.socialLinks,
-          popup: config.popup
-            ? {
-                enabled: !!config.popup.enabled,
-                id: config.popup.id || '1',
-                title: config.popup.title || '',
-                message: config.popup.message || '',
-                link: config.popup.link || '',
-                linkLabel: config.popup.linkLabel || 'Learn more',
-              }
-            : { enabled: false, id: '1', title: '', message: '', link: '', linkLabel: 'Learn more' },
-        }),
+        headers,
+        body: JSON.stringify(body),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed');
       alert('Settings saved.');
     } catch (err) {
-      alert(err.message || 'Could not save. Open from Telegram app.');
+      alert(err.message || 'Could not save.');
     } finally {
       setConfigSaving(false);
     }
@@ -405,18 +409,28 @@ export default function Dashboard() {
                   />
                 </div>
               </section>
+              <div className="admin-settings-field" style={{ marginTop: 16 }}>
+                <label className="admin-settings-label">Admin secret (if opening in browser)</label>
+                <input
+                  type="password"
+                  placeholder="Set ADMIN_API_SECRET in Vercel env"
+                  value={adminSecret}
+                  onChange={(e) => setAdminSecret(e.target.value)}
+                  className="admin-search"
+                />
+              </div>
               <button
                 type="button"
                 onClick={handleSaveConfig}
-                disabled={configSaving || !initData}
+                disabled={configSaving}
                 className="admin-video-btn"
-                style={{ marginTop: 16 }}
+                style={{ marginTop: 12 }}
               >
                 {configSaving ? 'Saving…' : 'Save settings'}
               </button>
-              {!initData && (
+              {!initData && !adminSecret && (
                 <p className="admin-hint" style={{ marginTop: 12 }}>
-                  Open this dashboard from the Telegram app to save (admin auth required).
+                  Open from Telegram app, or set ADMIN_API_SECRET in Vercel and enter it above.
                 </p>
               )}
             </div>
