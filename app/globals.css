@@ -469,6 +469,70 @@ button, a, input, select, textarea {
 }
 .admin-empty { font-size: 13px; color: #a3a3a3; padding: 16px 0; }
 .admin-loading { color: #737373; padding: 24px; }
+
+.admin-filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.admin-search {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid #e5e5e0;
+  border-radius: 8px;
+  font-size: 14px;
+}
+.admin-select {
+  padding: 10px 14px;
+  border: 1px solid #e5e5e0;
+  border-radius: 8px;
+  font-size: 14px;
+  min-width: 140px;
+}
+.admin-video-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: #dcfce7;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+.admin-video-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid #166534;
+  border-radius: 8px;
+  font-size: 14px;
+}
+.admin-video-btn {
+  padding: 10px 20px;
+  background: #166534;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.admin-video-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.admin-clear-btn {
+  padding: 10px 16px;
+  background: transparent;
+  color: #737373;
+  border: 1px solid #737373;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.story-check {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+}
+.story-check input { width: 18px; height: 18px; accent-color: #166534; }
+.story-card-admin { position: relative; }
+.story-card-admin.selected { border-color: #166534; box-shadow: 0 0 0 2px rgba(22, 101, 52, 0.3); }
+.story-num { font-weight: 700; color: #166534; }
 .story-card-admin {
   position: relative;
   border-radius: 12px;
