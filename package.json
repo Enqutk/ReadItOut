@@ -1,0 +1,33 @@
+{
+  "name": "leyu_mahi_bot",
+  "version": "1.0.0",
+  "description": "Leyu & Mahi Fan Story Bot - Telegram Mini-App",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:migrate": "npx supabase db push 2>/dev/null || echo 'Run migrations manually in Supabase SQL editor'",
+    "test-story": "node scripts/insert-test-story.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Enqutk/ReadItOut.git"
+  },
+  "keywords": ["telegram", "bot", "leyu-mahi", "supabase"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
+    "next": "^14.2.0",
+    "telegraf": "^4.16.3"
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.5",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "^14.2.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
