@@ -3,18 +3,6 @@
 import React, { useEffect } from 'react';
 import Link from 'next/link';
 
-declare global {
-  interface Window {
-    Telegram?: {
-      WebApp: {
-        ready: () => void;
-        expand: () => void;
-        MainButton?: { hide: () => void };
-      };
-    };
-  }
-}
-
 export default function AboutPage() {
   useEffect(() => {
     const tg = window.Telegram?.WebApp;
