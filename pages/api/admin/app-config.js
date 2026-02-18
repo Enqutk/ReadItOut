@@ -35,6 +35,7 @@ export default async function handler(req, res) {
     try {
       const { data: socialRow } = await supabase.from('app_config').select('value').eq('key', 'social_links').single();
       const { data: popupRow } = await supabase.from('app_config').select('value').eq('key', 'popup').single();
+      const { data: profileRow } = await supabase.from('app_config').select('value').eq('key', 'profile').single();
       const socialLinks = (socialRow?.value && typeof socialRow.value === 'object') ? socialRow.value : {};
       const popupRaw = popupRow?.value && typeof popupRow.value === 'object' ? popupRow.value : {};
       const popup = {
@@ -45,15 +46,36 @@ export default async function handler(req, res) {
         link: popupRaw.link || '',
         linkLabel: popupRaw.linkLabel || 'Learn more',
       };
-      return res.status(200).json({ socialLinks, popup });
+      const profileRaw = profileRow?.value && typeof profileRow.value === 'object' ? profileRow.value : {};
+      const profile = {
+        photoLeyu: profileRaw.photoLeyu || '',
+        photoMahi: profileRaw.photoMahi || '',
+        photoTogether: profileRaw.photoTogether || '',
+        tagline: profileRaw.tagline || 'Two voices. One vibe. Your stories.',
+        aboutBlurb: profileRaw.aboutBlurb || '',
+      };
+      return res.status(200).json({ socialLinks, popup, profile });
     } catch (err) {
       return res.status(500).json({ error: err.message });
     }
   }
 
-  const { socialLinks: bodySocial, popup: bodyPopup } = req.body || {};
+  const { socialLinks: bodySocial, popup: bodyPopup, profile: bodyProfile } = req.body || {};
 
   try {
+    if (bodyProfile !== undefined) {
+      const p = {
+        photoLeyu: (bodyProfile.photoLeyu && String(bodyProfile.photoLeyu).trim()) || '',
+        photoMahi: (bodyProfile.photoMahi && String(bodyProfile.photoMahi).trim()) || '',
+        photoTogether: (bodyProfile.photoTogether && String(bodyProfile.photoTogether).trim()) || '',
+        tagline: (bodyProfile.tagline && String(bodyProfile.tagline).trim()) || 'Two voices. One vibe. Your stories.',
+        aboutBlurb: (bodyProfile.aboutBlurb && String(bodyProfile.aboutBlurb).trim()) || '',
+      };
+      await supabase.from('app_config').upsert(
+        { key: 'profile', value: p, updated_at: new Date().toISOString() },
+        { onConflict: 'key' }
+      );
+    }
     if (bodySocial !== undefined) {
       const sanitized = {};
       const keys = ['youtube', 'instagram', 'tiktok', 'twitter', 'discord'];

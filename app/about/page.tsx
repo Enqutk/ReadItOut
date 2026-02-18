@@ -11,9 +11,18 @@ const SOCIAL_ICONS = {
   discord: '💬',
 };
 
+const DEFAULT_ABOUT = `Leyu and Mahi — friends who turned late-night conversations into something bigger.
+
+They laugh together, create together, and now they want to hear from you. Share your story and become part of what they're building.
+
+We'll notify you when your story is featured. Thanks for being part of our community! ✨`;
+
 export default function AboutPage() {
   const [ready, setReady] = useState(false);
-  const [socialLinks, setSocialLinks] = useState<Record<string, string>>({});
+  const [config, setConfig] = useState<{
+    socialLinks: Record<string, string>;
+    profile?: { photoLeyu?: string; photoMahi?: string; photoTogether?: string; aboutBlurb?: string };
+  }>({ socialLinks: {} });
 
   useEffect(() => {
     const tg = window.Telegram?.WebApp;
@@ -24,31 +33,42 @@ export default function AboutPage() {
     }
     fetch('/api/app-config')
       .then((r) => r.json())
-      .then((data) => setSocialLinks(data.socialLinks || {}))
+      .then((data) => setConfig({
+        socialLinks: data.socialLinks || {},
+        profile: data.profile || {},
+      }))
       .catch(() => {})
       .finally(() => setReady(true));
   }, []);
 
-  const links = Object.entries(socialLinks);
+  const links = Object.entries(config.socialLinks);
+  const profile = config.profile || {};
+  const hasPhotos = !!(profile.photoLeyu || profile.photoMahi || profile.photoTogether);
+  const aboutText = (profile.aboutBlurb || DEFAULT_ABOUT).trim();
 
   return (
     <main className="page">
       <Link href="/" className="link-back">← Back</Link>
-      <h1 className="page-title">About</h1>
+      <h1 className="page-title">About Leyu & Mahi</h1>
 
-      <div className="card" style={{ marginBottom: 24 }}>
-        <p style={{ margin: 0, lineHeight: 1.7, color: 'var(--text-muted)' }}>
-          Submit your stories to Leyu & Mahi. We read the best ones on our videos! 🎬
-        </p>
+      {hasPhotos && (
+        <div className="about-avatars">
+          {profile.photoTogether ? (
+            <img src={profile.photoTogether} alt="Leyu & Mahi" className="about-avatar about-avatar-together" />
+          ) : (
+            <>
+              {profile.photoLeyu && <img src={profile.photoLeyu} alt="Leyu" className="about-avatar" />}
+              {profile.photoMahi && <img src={profile.photoMahi} alt="Mahi" className="about-avatar" />}
+            </>
+          )}
+        </div>
+      )}
+
+      <div className="card about-card">
+        <p className="about-text">{aboutText}</p>
       </div>
 
-      <div className="card">
-        <p style={{ margin: 0, lineHeight: 1.7, color: 'var(--text-muted)' }}>
-          We&apos;ll notify you when your story is featured. Thanks for being part of our community! ✨
-        </p>
-      </div>
-
-      <div className="card social-links-card social-links-card-stable">
+      <div className="card social-links-card social-links-card-stable" style={{ marginTop: 24 }}>
         <h3 className="social-links-title">Follow Leyu & Mahi</h3>
         <div className="social-links">
           {!ready ? (

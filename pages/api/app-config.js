@@ -9,6 +9,7 @@ async function fromDb() {
   try {
     const { data: socialRow } = await supabase.from('app_config').select('value').eq('key', 'social_links').single();
     const { data: popupRow } = await supabase.from('app_config').select('value').eq('key', 'popup').single();
+    const { data: profileRow } = await supabase.from('app_config').select('value').eq('key', 'profile').single();
     const socialLinks = (socialRow?.value && typeof socialRow.value === 'object') ? socialRow.value : null;
     const popupRaw = popupRow?.value && typeof popupRow.value === 'object' ? popupRow.value : null;
     const popup = popupRaw?.enabled
@@ -20,7 +21,15 @@ async function fromDb() {
           linkLabel: popupRaw.linkLabel || 'Learn more',
         }
       : null;
-    return { socialLinks, popup };
+    const profileRaw = profileRow?.value && typeof profileRow.value === 'object' ? profileRow.value : {};
+    const profile = {
+      photoLeyu: profileRaw.photoLeyu || '',
+      photoMahi: profileRaw.photoMahi || '',
+      photoTogether: profileRaw.photoTogether || '',
+      tagline: profileRaw.tagline || 'Two voices. One vibe. Your stories.',
+      aboutBlurb: profileRaw.aboutBlurb || '',
+    };
+    return { socialLinks, popup, profile };
   } catch (_) {
     return null;
   }
@@ -61,8 +70,13 @@ export default async function handler(req, res) {
     return res.status(200).json({
       socialLinks: fromDatabase.socialLinks || {},
       popup: fromDatabase.popup || null,
+      profile: fromDatabase.profile || {},
     });
   }
   const env = fromEnv();
-  return res.status(200).json({ socialLinks: env.socialLinks, popup: env.popup });
+  return res.status(200).json({
+    socialLinks: env.socialLinks,
+    popup: env.popup,
+    profile: { photoLeyu: '', photoMahi: '', photoTogether: '', tagline: 'Two voices. One vibe. Your stories.', aboutBlurb: '' },
+  });
 }

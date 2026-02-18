@@ -9,6 +9,12 @@ export default function Home() {
   const [ready, setReady] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [socialLinks, setSocialLinks] = useState<Record<string, string>>({});
+  const [profile, setProfile] = useState<{
+    photoLeyu?: string;
+    photoMahi?: string;
+    photoTogether?: string;
+    tagline?: string;
+  }>({});
 
   useEffect(() => {
     const tg = (typeof window !== 'undefined' && window.Telegram?.WebApp) || null;
@@ -25,6 +31,7 @@ export default function Home() {
       .then(([me, config]) => {
         setIsAdmin(me?.isAdmin === true);
         setSocialLinks(config?.socialLinks || {});
+        setProfile(config?.profile || {});
       })
       .catch(() => {})
       .finally(() => setReady(true));
@@ -32,14 +39,27 @@ export default function Home() {
 
   const links = Object.entries(socialLinks);
 
+  const hasPhotos = !!(profile?.photoLeyu || profile?.photoMahi || profile?.photoTogether);
+  const tagline = profile?.tagline || 'Two voices. One vibe. Your stories.';
+
   return (
     <main className="home">
       <div className="home-hero">
-        <div className="home-icon">✨</div>
-        <h1 className="home-title">Submit Your Story!</h1>
-        <p className="home-subtitle">
-          Share your stories with Leyu & Mahi
-        </p>
+        <div className="home-avatars">
+          {profile?.photoTogether ? (
+            <img src={profile.photoTogether} alt="Leyu & Mahi" className="home-avatar home-avatar-together" />
+          ) : hasPhotos ? (
+            <>
+              {profile?.photoLeyu && <img src={profile.photoLeyu} alt="Leyu" className="home-avatar" />}
+              {profile?.photoMahi && <img src={profile.photoMahi} alt="Mahi" className="home-avatar" />}
+            </>
+          ) : (
+            <div className="home-icon">✨</div>
+          )}
+        </div>
+        <h1 className="home-title">Leyu & Mahi</h1>
+        <p className="home-subtitle">{tagline}</p>
+        <p className="home-cta">Share your story. We read the best ones in our videos.</p>
       </div>
 
       <div className="home-actions home-actions-stable">
@@ -62,7 +82,7 @@ export default function Home() {
               </>
             )}
             <Link href="/about" className="btn-secondary">
-              <span>❓</span> How It Works
+              <span>💜</span> About Leyu & Mahi
             </Link>
             {isAdmin && (
               <Link href="/dashboard" className="btn-admin">

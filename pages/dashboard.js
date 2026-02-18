@@ -15,7 +15,7 @@ export default function Dashboard() {
   const [rejectReason, setRejectReason] = useState('');
   const [initData, setInitData] = useState('');
   const [adminSecret, setAdminSecret] = useState('');
-  const [config, setConfig] = useState({ socialLinks: {}, popup: null });
+  const [config, setConfig] = useState({ socialLinks: {}, popup: null, profile: {} });
   const [configSaving, setConfigSaving] = useState(false);
 
   const selectFilter = (id) => {
@@ -46,11 +46,19 @@ export default function Dashboard() {
         .then((r) => r.json())
         .then((data) => {
           const p = data.popup;
+          const prof = data.profile || {};
           setConfig({
             socialLinks: data.socialLinks || {},
             popup: p
               ? { ...p, enabled: !!p.enabled }
               : { id: '1', title: '', message: '', link: '', linkLabel: 'Learn more', enabled: false },
+            profile: {
+              photoLeyu: prof.photoLeyu || '',
+              photoMahi: prof.photoMahi || '',
+              photoTogether: prof.photoTogether || '',
+              tagline: prof.tagline || 'Two voices. One vibe. Your stories.',
+              aboutBlurb: prof.aboutBlurb || '',
+            },
           });
         })
         .catch(() => {});
@@ -179,6 +187,13 @@ export default function Dashboard() {
               linkLabel: config.popup.linkLabel || 'Learn more',
             }
           : { enabled: false, id: '1', title: '', message: '', link: '', linkLabel: 'Learn more' },
+        profile: {
+          photoLeyu: config.profile?.photoLeyu || '',
+          photoMahi: config.profile?.photoMahi || '',
+          photoTogether: config.profile?.photoTogether || '',
+          tagline: config.profile?.tagline || 'Two voices. One vibe. Your stories.',
+          aboutBlurb: config.profile?.aboutBlurb || '',
+        },
       };
       if (initData) body.initData = initData;
       if (adminSecret.trim()) body.adminSecret = adminSecret.trim();
@@ -294,6 +309,86 @@ export default function Dashboard() {
 
           {activeFilter === 'settings' && (
             <div className="admin-settings">
+              <section className="admin-settings-section">
+                <h3 className="admin-settings-title">Profile (Leyu & Mahi)</h3>
+                <p className="admin-hint">Photos and copy shown on the mini app. Use image URLs (hosted anywhere).</p>
+                <div className="admin-settings-field">
+                  <label className="admin-settings-label">Photo Leyu (URL)</label>
+                  <input
+                    type="url"
+                    placeholder="https://..."
+                    value={config.profile?.photoLeyu || ''}
+                    onChange={(e) =>
+                      setConfig((c) => ({
+                        ...c,
+                        profile: { ...(c.profile || {}), photoLeyu: e.target.value },
+                      }))
+                    }
+                    className="admin-search"
+                  />
+                </div>
+                <div className="admin-settings-field">
+                  <label className="admin-settings-label">Photo Mahi (URL)</label>
+                  <input
+                    type="url"
+                    placeholder="https://..."
+                    value={config.profile?.photoMahi || ''}
+                    onChange={(e) =>
+                      setConfig((c) => ({
+                        ...c,
+                        profile: { ...(c.profile || {}), photoMahi: e.target.value },
+                      }))
+                    }
+                    className="admin-search"
+                  />
+                </div>
+                <div className="admin-settings-field">
+                  <label className="admin-settings-label">Photo together (optional)</label>
+                  <input
+                    type="url"
+                    placeholder="https://..."
+                    value={config.profile?.photoTogether || ''}
+                    onChange={(e) =>
+                      setConfig((c) => ({
+                        ...c,
+                        profile: { ...(c.profile || {}), photoTogether: e.target.value },
+                      }))
+                    }
+                    className="admin-search"
+                  />
+                </div>
+                <div className="admin-settings-field">
+                  <label className="admin-settings-label">Tagline (home page)</label>
+                  <input
+                    type="text"
+                    placeholder="Two voices. One vibe. Your stories."
+                    value={config.profile?.tagline || ''}
+                    onChange={(e) =>
+                      setConfig((c) => ({
+                        ...c,
+                        profile: { ...(c.profile || {}), tagline: e.target.value },
+                      }))
+                    }
+                    className="admin-search"
+                  />
+                </div>
+                <div className="admin-settings-field">
+                  <label className="admin-settings-label">About blurb (About page)</label>
+                  <textarea
+                    placeholder="Leyu and Mahi — friends who turned late-night conversations into something bigger..."
+                    value={config.profile?.aboutBlurb || ''}
+                    onChange={(e) =>
+                      setConfig((c) => ({
+                        ...c,
+                        profile: { ...(c.profile || {}), aboutBlurb: e.target.value },
+                      }))
+                    }
+                    className="admin-search"
+                    rows={4}
+                    style={{ resize: 'vertical' }}
+                  />
+                </div>
+              </section>
               <section className="admin-settings-section">
                 <h3 className="admin-settings-title">Social links</h3>
                 <p className="admin-hint">Shown on the mini app About page and home. Leave blank to hide.</p>
