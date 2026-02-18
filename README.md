@@ -101,14 +101,23 @@ Both should insert a test story into Supabase. Check in **Supabase → Table Edi
 
 ```
 leyu_mahi_bot/
+├── app/                # Mini App (App Router)
+│   ├── layout.tsx
+│   ├── page.tsx        # Home
+│   ├── submit/page.tsx
+│   ├── stories/page.tsx
+│   └── about/page.tsx
 ├── lib/
-│   ├── bot.js          # Telegraf bot + commands
-│   └── supabase.js     # Supabase client
+│   ├── bot.js
+│   ├── supabase.js
+│   └── telegram-auth.js
 ├── pages/
-│   ├── dashboard.js    # Admin story dashboard
+│   ├── dashboard.js
 │   └── api/
-│       ├── telegram.js # Webhook endpoint
-│       ├── stories.js  # Stories API for dashboard
+│       ├── telegram.js
+│       ├── stories.js
+│       ├── submit-story.js  # Mini App submit
+│       ├── my-stories.js    # Mini App my stories
 │       └── test-story.js
 ├── supabase/
 │   └── migrations/
@@ -159,6 +168,23 @@ leyu_mahi_bot/
 - `/select_for_video <youtube_url> <id1> <id2> ...` – Select approved stories, tag with video link, notify each fan
 
 **Setup:** Run `supabase/migrations/002_notifications_and_video.sql` in Supabase SQL Editor.
+
+---
+
+## Telegram Mini App ✅
+
+- [x] **Open App** button in bot `/start` – opens Next.js UI in Telegram webview
+- [x] **Home** – Submit a Story, My Stories, About
+- [x] **Submit** – Category dropdown, story textarea, anonymous toggle
+- [x] **My Stories** – List of user's stories with status (Pending / Featured 🌟)
+- [x] InitData validation (HMAC) for secure user identification
+- [x] Mobile-first, dark-mode friendly
+
+**Flow:** User opens bot → taps "Open App" → Next.js loads in webview → Submit/View stories.
+
+**Setup:**
+1. Set `NEXT_PUBLIC_APP_URL` in Vercel env (e.g. `https://read-it-out-ten.vercel.app`)
+2. In [@BotFather](https://t.me/BotFather): `/mybots` → your bot → **Bot Settings** → **Menu Button** → set URL to your app URL (optional; the inline button also works)
 
 ---
 
