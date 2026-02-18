@@ -36,13 +36,11 @@ export default function Dashboard() {
   });
   const featuredCount = stories.filter((s) => s.youtube_link).length;
   const newCount = stories.filter((s) => s.status === 'pending' && !s.read_at).length;
-  const reviewedCount = stories.filter((s) => s.status === 'pending' && s.read_at).length;
   const categories = [...new Set(stories.map((s) => s.category).filter(Boolean))];
 
   const sidebarItems = [
     { id: 'all', label: 'All Stories', count: stories.length },
     { id: 'pending', label: 'New', count: newCount },
-    { id: 'reviewed', label: 'Reviewed', count: reviewedCount },
     { id: 'approved', label: 'Shortlisted', count: counts.approved },
     { id: 'rejected', label: 'Rejected', count: counts.rejected },
     { id: 'featured', label: 'Featured', count: featuredCount },
@@ -61,7 +59,6 @@ export default function Dashboard() {
   };
 
   const newStories = bySearch(byCategory(stories.filter((s) => s.status === 'pending' && !s.read_at)));
-  const reviewedStories = bySearch(byCategory(stories.filter((s) => s.status === 'pending' && s.read_at)));
   const shortlisted = bySearch(byCategory(stories.filter((s) => s.status === 'approved')));
   const featured = bySearch(byCategory(stories.filter((s) => s.youtube_link)));
 
@@ -103,8 +100,6 @@ export default function Dashboard() {
   const filteredStories =
     activeFilter === 'pending'
       ? newStories
-      : activeFilter === 'reviewed'
-      ? reviewedStories
       : activeFilter === 'approved'
       ? shortlisted
       : activeFilter === 'rejected'
@@ -113,23 +108,7 @@ export default function Dashboard() {
       ? featured
       : bySearch(byCategory(stories));
 
-  const canSelect = ['pending', 'approved', 'reviewed', 'all'].includes(activeFilter);
-
-  const handleMarkRead = async (storyId) => {
-    try {
-      const res = await fetch('/api/admin/mark-read', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ storyId }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed');
-      const refreshed = await fetch('/api/stories').then((r) => r.json());
-      setStories(refreshed?.stories || []);
-    } catch (err) {
-      alert(err.message || 'Something went wrong');
-    }
-  };
+  const canSelect = ['pending', 'approved', 'all'].includes(activeFilter);
 
   const handleReject = async () => {
     if (!rejectingId) return;
@@ -279,26 +258,9 @@ export default function Dashboard() {
                     onToggle={() => toggleSelect(s.id)}
                     onReject={() => setRejectingId(s.id)}
                     showReject
-                    onMarkRead={() => handleMarkRead(s.id)}
-                    showMarkRead
                   />
                 ))}
                 {newStories.length === 0 && <div className="admin-empty">No new stories</div>}
-              </div>
-              <div className="admin-column">
-                <h3>Reviewed</h3>
-                {reviewedStories.map((s) => (
-                  <StoryCard
-                    key={s.id}
-                    story={s}
-                    selectable={canSelect}
-                    selected={selectedIds.has(s.id)}
-                    onToggle={() => toggleSelect(s.id)}
-                    onReject={() => setRejectingId(s.id)}
-                    showReject
-                  />
-                ))}
-                {reviewedStories.length === 0 && <div className="admin-empty">None yet</div>}
               </div>
               <div className="admin-column">
                 <h3>Shortlisted</h3>
@@ -333,8 +295,6 @@ export default function Dashboard() {
                     onToggle={() => toggleSelect(s.id)}
                     onReject={s.status === 'pending' ? () => setRejectingId(s.id) : null}
                     showReject={s.status === 'pending'}
-                    onMarkRead={s.status === 'pending' && !s.read_at ? () => handleMarkRead(s.id) : null}
-                    showMarkRead={s.status === 'pending' && !s.read_at}
                 />
               ))}
               {filteredStories.length === 0 && <div className="admin-empty">No stories</div>}
@@ -346,7 +306,7 @@ export default function Dashboard() {
   );
 }
 
-function StoryCard({ story, selectable, selected, onToggle, onReject, showReject, onMarkRead, showMarkRead }) {
+function StoryCard({ story, selectable, selected, onToggle, onReject, showReject }) {
   const num = story.story_number != null ? story.story_number : null;
   return (
     <div className={`story-card-admin ${selected ? 'selected' : ''}`}>
@@ -369,11 +329,6 @@ function StoryCard({ story, selectable, selected, onToggle, onReject, showReject
             <a href={story.youtube_link} target="_blank" rel="noopener noreferrer" className="story-link">
               📺 Watch video
             </a>
-          )}
-          {showMarkRead && onMarkRead && (
-            <button type="button" onClick={onMarkRead} className="story-mark-read-btn">
-              Mark as read
-            </button>
           )}
           {showReject && onReject && (
             <button type="button" onClick={onReject} className="story-reject-btn">
