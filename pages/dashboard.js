@@ -3,15 +3,21 @@ import Head from 'next/head';
 
 export default function Dashboard() {
   const [stories, setStories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [activeFilter, setActiveFilter] = useState('all');
+  const [categoryFilter, setCategoryFilter] = useState('');
+  const [searchFilter, setSearchFilter] = useState('');
+  const [selectedIds, setSelectedIds] = useState(new Set());
+  const [youtubeLink, setYoutubeLink] = useState('');
+  const [linking, setLinking] = useState(false);
 
   useEffect(() => {
     document.body.classList.add('admin-page');
     return () => document.body.classList.remove('admin-page');
   }, []);
-  const [loading, setLoading] = useState(true);
-  const [activeFilter, setActiveFilter] = useState('pending');
 
   useEffect(() => {
+    setLoading(true);
     fetch('/api/stories')
       .then((r) => r.json())
       .then((data) => {
@@ -19,13 +25,14 @@ export default function Dashboard() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, []);
+  }, [activeFilter]);
 
   const counts = { pending: 0, approved: 0, rejected: 0 };
   stories.forEach((s) => {
     if (counts[s.status] !== undefined) counts[s.status]++;
   });
   const featuredCount = stories.filter((s) => s.youtube_link).length;
+  const categories = [...new Set(stories.map((s) => s.category).filter(Boolean))];
 
   const sidebarItems = [
     { id: 'all', label: 'All Stories', count: stories.length },
@@ -35,9 +42,68 @@ export default function Dashboard() {
     { id: 'featured', label: 'Featured', count: featuredCount },
   ];
 
-  const newStories = stories.filter((s) => s.status === 'pending');
-  const shortlisted = stories.filter((s) => s.status === 'approved');
-  const featured = stories.filter((s) => s.youtube_link);
+  const byCategory = (list) =>
+    !categoryFilter ? list : list.filter((s) => s.category === categoryFilter);
+  const bySearch = (list) => {
+    if (!searchFilter.trim()) return list;
+    const q = searchFilter.trim().toLowerCase();
+    return list.filter(
+      (s) =>
+        (s.content && s.content.toLowerCase().includes(q)) ||
+        (s.telegram_username && s.telegram_username.toLowerCase().includes(q))
+    );
+  };
+
+  const newStories = bySearch(byCategory(stories.filter((s) => s.status === 'pending')));
+  const shortlisted = bySearch(byCategory(stories.filter((s) => s.status === 'approved')));
+  const featured = bySearch(byCategory(stories.filter((s) => s.youtube_link)));
+
+  const toggleSelect = (id) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const handleFeatureVideo = async () => {
+    if (selectedIds.size === 0 || !youtubeLink.trim()) return;
+    setLinking(true);
+    try {
+      const res = await fetch('/api/admin/feature-video', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          storyIds: [...selectedIds],
+          youtubeLink: youtubeLink.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed');
+      setSelectedIds(new Set());
+      setYoutubeLink('');
+      const refreshed = await fetch('/api/stories').then((r) => r.json());
+      setStories(refreshed?.stories || []);
+    } catch (err) {
+      alert(err.message || 'Something went wrong');
+    } finally {
+      setLinking(false);
+    }
+  };
+
+  const filteredStories =
+    activeFilter === 'pending'
+      ? newStories
+      : activeFilter === 'approved'
+      ? shortlisted
+      : activeFilter === 'rejected'
+      ? stories.filter((s) => s.status === 'rejected')
+      : activeFilter === 'featured'
+      ? featured
+      : stories;
+
+  const canSelect = ['pending', 'approved', 'all'].includes(activeFilter);
 
   return (
     <>
@@ -59,14 +125,61 @@ export default function Dashboard() {
               </button>
             ))}
           </nav>
-          <a href="/" className="admin-back">← Back to Mini App</a>
+          <a href="/" className="admin-back">
+            ← Back to Mini App
+          </a>
         </aside>
 
         <main className="admin-main">
           <header className="admin-header">
             <h1>Manage Stories</h1>
-            <p className="admin-hint">Use Telegram /approve, /reject, /select_for_video for actions</p>
+            <p className="admin-hint">
+              Stories are ordered by submission (#1 first). Select stories and add a video link to feature them.
+            </p>
           </header>
+
+          <div className="admin-filters">
+            <input
+              type="text"
+              placeholder="Search stories..."
+              value={searchFilter}
+              onChange={(e) => setSearchFilter(e.target.value)}
+              className="admin-search"
+            />
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="admin-select"
+            >
+              <option value="">All categories</option>
+              {categories.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {selectedIds.size > 0 && canSelect && (
+            <div className="admin-video-bar">
+              <span>
+                {selectedIds.size} selected
+              </span>
+              <input
+                type="url"
+                placeholder="YouTube link..."
+                value={youtubeLink}
+                onChange={(e) => setYoutubeLink(e.target.value)}
+                className="admin-video-input"
+              />
+              <button onClick={handleFeatureVideo} disabled={linking || !youtubeLink.trim()} className="admin-video-btn">
+                {linking ? 'Linking...' : 'Add video link to selected'}
+              </button>
+              <button onClick={() => setSelectedIds(new Set())} className="admin-clear-btn">
+                Clear
+              </button>
+            </div>
+          )}
 
           {loading ? (
             <div className="admin-loading">Loading…</div>
@@ -75,14 +188,26 @@ export default function Dashboard() {
               <div className="admin-column">
                 <h3>New Stories</h3>
                 {newStories.map((s) => (
-                  <StoryCard key={s.id} story={s} />
+                  <StoryCard
+                    key={s.id}
+                    story={s}
+                    selectable={canSelect}
+                    selected={selectedIds.has(s.id)}
+                    onToggle={() => toggleSelect(s.id)}
+                  />
                 ))}
                 {newStories.length === 0 && <div className="admin-empty">No new stories</div>}
               </div>
               <div className="admin-column">
                 <h3>Shortlisted</h3>
                 {shortlisted.map((s) => (
-                  <StoryCard key={s.id} story={s} />
+                  <StoryCard
+                    key={s.id}
+                    story={s}
+                    selectable={canSelect}
+                    selected={selectedIds.has(s.id)}
+                    onToggle={() => toggleSelect(s.id)}
+                  />
                 ))}
                 {shortlisted.length === 0 && <div className="admin-empty">None yet</div>}
               </div>
@@ -96,12 +221,16 @@ export default function Dashboard() {
             </div>
           ) : (
             <div className="admin-list">
-              {(activeFilter === 'pending' ? newStories : activeFilter === 'approved' ? shortlisted : activeFilter === 'rejected' ? stories.filter((s) => s.status === 'rejected') : featured).map((s) => (
-                <StoryCard key={s.id} story={s} />
+              {filteredStories.map((s) => (
+                <StoryCard
+                  key={s.id}
+                  story={s}
+                  selectable={canSelect}
+                  selected={selectedIds.has(s.id)}
+                  onToggle={() => toggleSelect(s.id)}
+                />
               ))}
-              {((activeFilter === 'pending' ? newStories : activeFilter === 'approved' ? shortlisted : activeFilter === 'rejected' ? stories.filter((s) => s.status === 'rejected') : featured).length === 0) && (
-                <div className="admin-empty">No stories</div>
-              )}
+              {filteredStories.length === 0 && <div className="admin-empty">No stories</div>}
             </div>
           )}
         </main>
@@ -110,14 +239,22 @@ export default function Dashboard() {
   );
 }
 
-function StoryCard({ story }) {
+function StoryCard({ story, selectable, selected, onToggle }) {
+  const num = story.story_number != null ? story.story_number : null;
   return (
-    <div className="story-card-admin">
+    <div className={`story-card-admin ${selected ? 'selected' : ''}`}>
+      {selectable && (
+        <label className="story-check">
+          <input type="checkbox" checked={selected} onChange={onToggle} />
+        </label>
+      )}
       <div className="story-card-bg" />
       <div className="story-card-content">
-        <p className="story-text">{story.content.slice(0, 150)}{story.content.length > 150 ? '…' : ''}</p>
+        <p className="story-text">
+          {story.content.length > 150 ? story.content.slice(0, 150) + '…' : story.content}
+        </p>
         <div className="story-meta">
-          <span>#{story.id.slice(0, 8)}</span>
+          <span className="story-num">#{num != null ? num : story.id.slice(0, 8)}</span>
           <span>@{story.telegram_username || story.telegram_user_id}</span>
         </div>
         {story.youtube_link && (
