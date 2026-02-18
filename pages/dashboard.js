@@ -43,7 +43,7 @@ export default function Dashboard() {
     { id: 'pending', label: 'New', count: newCount },
     { id: 'approved', label: 'Shortlisted', count: counts.approved },
     { id: 'rejected', label: 'Rejected', count: counts.rejected },
-    { id: 'featured', label: 'Featured', count: featuredCount },
+    { id: 'featured', label: 'Already read (contact)', count: featuredCount },
   ];
 
   const byCategory = (list) =>
@@ -276,16 +276,14 @@ export default function Dashboard() {
                 ))}
                 {shortlisted.length === 0 && <div className="admin-empty">None yet</div>}
               </div>
-              <div className="admin-column">
-                <h3>Featured (in video)</h3>
-                {featured.map((s) => (
-                  <StoryCard key={s.id} story={s} showReject={false} />
-                ))}
-                {featured.length === 0 && <div className="admin-empty">None yet</div>}
-              </div>
             </div>
           ) : (
             <div className="admin-list">
+              {activeFilter === 'featured' && (
+                <p className="admin-hint admin-hint-inline">
+                  Stories with video links – kept here so you can contact fans if needed.
+                </p>
+              )}
               {filteredStories.map((s) => (
                 <StoryCard
                     key={s.id}
@@ -295,6 +293,7 @@ export default function Dashboard() {
                     onToggle={() => toggleSelect(s.id)}
                     onReject={s.status === 'pending' ? () => setRejectingId(s.id) : null}
                     showReject={s.status === 'pending'}
+                    showContact={!!s.youtube_link}
                 />
               ))}
               {filteredStories.length === 0 && <div className="admin-empty">No stories</div>}
@@ -306,8 +305,13 @@ export default function Dashboard() {
   );
 }
 
-function StoryCard({ story, selectable, selected, onToggle, onReject, showReject }) {
+function StoryCard({ story, selectable, selected, onToggle, onReject, showReject, showContact }) {
   const num = story.story_number != null ? story.story_number : null;
+  const contactHref = story.telegram_username
+    ? `https://t.me/${story.telegram_username.replace(/^@/, '')}`
+    : story.telegram_user_id
+    ? `tg://user?id=${story.telegram_user_id}`
+    : null;
   return (
     <div className={`story-card-admin ${selected ? 'selected' : ''}`}>
       {selectable && (
@@ -328,6 +332,11 @@ function StoryCard({ story, selectable, selected, onToggle, onReject, showReject
           {story.youtube_link && (
             <a href={story.youtube_link} target="_blank" rel="noopener noreferrer" className="story-link">
               📺 Watch video
+            </a>
+          )}
+          {showContact && contactHref && (
+            <a href={contactHref} target="_blank" rel="noopener noreferrer" className="story-link story-contact-link">
+              ✉️ Contact
             </a>
           )}
           {showReject && onReject && (

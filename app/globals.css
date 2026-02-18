@@ -487,6 +487,7 @@ button, a, input, select, textarea {
   background-clip: text;
 }
 .admin-hint { font-size: 13px; color: var(--text-muted); margin: 0; }
+.admin-hint-inline { margin-bottom: 16px; }
 .admin-kanban {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
