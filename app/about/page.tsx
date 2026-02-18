@@ -12,7 +12,7 @@ const SOCIAL_ICONS = {
 };
 
 export default function AboutPage() {
-  const [socialLinks, setSocialLinks] = useState({});
+  const [socialLinks, setSocialLinks] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const tg = window.Telegram?.WebApp;
@@ -58,7 +58,7 @@ export default function AboutPage() {
                 rel="noopener noreferrer"
                 className="social-link"
               >
-                <span className="social-icon">{SOCIAL_ICONS[key] || '🔗'}</span>
+                <span className="social-icon">{SOCIAL_ICONS[key as keyof typeof SOCIAL_ICONS] || '🔗'}</span>
                 <span className="social-label">{key}</span>
               </a>
             ))}
