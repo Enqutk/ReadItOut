@@ -11,10 +11,6 @@ export default function Dashboard() {
   const [youtubeLink, setYoutubeLink] = useState('');
   const [linking, setLinking] = useState(false);
 
-  useEffect(() => {
-    document.body.classList.add('admin-page');
-    return () => document.body.classList.remove('admin-page');
-  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -25,7 +21,7 @@ export default function Dashboard() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [activeFilter]);
+  }, []);
 
   const counts = { pending: 0, approved: 0, rejected: 0 };
   stories.forEach((s) => {
