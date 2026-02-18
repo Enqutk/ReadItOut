@@ -1,7 +1,19 @@
 'use client';
 
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
+
+declare global {
+  interface Window {
+    Telegram?: {
+      WebApp: {
+        ready: () => void;
+        expand: () => void;
+        MainButton?: { hide: () => void };
+      };
+    };
+  }
+}
 
 export default function AboutPage() {
   useEffect(() => {
@@ -14,17 +26,21 @@ export default function AboutPage() {
   }, []);
 
   return (
-    <main style={{ minHeight: '100vh', padding: 24 }}>
-      <Link href="/" style={{ color: 'var(--tg-theme-link-color)', textDecoration: 'none', marginBottom: 24, display: 'inline-block' }}>
-        ← Back
-      </Link>
-      <h1 style={{ fontSize: 24, marginBottom: 24 }}>About</h1>
-      <p style={{ lineHeight: 1.6, color: 'var(--tg-theme-hint-color)' }}>
-        Submit your stories to Leyu & Mahi. We read the best ones on our videos! 🎬
-      </p>
-      <p style={{ lineHeight: 1.6, color: 'var(--tg-theme-hint-color)' }}>
-        We&apos;ll notify you when your story is featured. Thanks for being part of our community!
-      </p>
+    <main className="page">
+      <Link href="/" className="link-back">← Back</Link>
+      <h1 className="page-title">About</h1>
+
+      <div className="card" style={{ marginBottom: 24 }}>
+        <p style={{ margin: 0, lineHeight: 1.7, color: 'var(--text-muted)' }}>
+          Submit your stories to Leyu & Mahi. We read the best ones on our videos! 🎬
+        </p>
+      </div>
+
+      <div className="card">
+        <p style={{ margin: 0, lineHeight: 1.7, color: 'var(--text-muted)' }}>
+          We&apos;ll notify you when your story is featured. Thanks for being part of our community! ✨
+        </p>
+      </div>
     </main>
   );
 }

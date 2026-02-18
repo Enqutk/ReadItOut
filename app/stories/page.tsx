@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 
 type Story = {
@@ -45,54 +45,58 @@ export default function MyStoriesPage() {
   }, []);
 
   const statusLabel = (s: Story) => {
-    if (s.status === 'featured' || s.youtube_link) return 'Featured 🌟';
+    if (s.status === 'featured' || s.youtube_link) return 'Featured';
     if (s.status === 'approved') return 'Approved';
     if (s.status === 'rejected') return 'Rejected';
     return 'Pending';
   };
 
-  return (
-    <main style={{ minHeight: '100vh', padding: 24 }}>
-      <Link href="/" style={{ color: 'var(--tg-theme-link-color)', textDecoration: 'none', marginBottom: 24, display: 'inline-block' }}>
-        ← Back
-      </Link>
-      <h1 style={{ fontSize: 24, marginBottom: 24 }}>My Stories</h1>
+  const badgeClass = (s: Story) => {
+    if (s.youtube_link) return 'badge badge-featured';
+    if (s.status === 'approved') return 'badge badge-approved';
+    if (s.status === 'rejected') return 'badge badge-rejected';
+    return 'badge badge-pending';
+  };
 
-      {loading && <p>Loading...</p>}
-      {error && <p style={{ color: '#f87171' }}>{error}</p>}
+  return (
+    <main className="page">
+      <Link href="/" className="link-back">← Back</Link>
+      <h1 className="page-title">My Stories</h1>
+
+      {loading && (
+        <div className="empty-state">
+          <div className="loading-spinner" />
+          <p>Loading your stories...</p>
+        </div>
+      )}
+
+      {error && (
+        <p style={{ color: 'var(--error)', marginBottom: 20 }}>{error}</p>
+      )}
 
       {!loading && !error && stories.length === 0 && (
-        <p style={{ color: 'var(--tg-theme-hint-color)' }}>No stories yet. Submit one from the home screen!</p>
+        <div className="empty-state">
+          <p style={{ fontSize: 48, marginBottom: 16 }}>📖</p>
+          <p>No stories yet. Submit one from the home screen!</p>
+          <Link href="/submit" className="btn-primary" style={{ marginTop: 24, maxWidth: 200 }}>
+            Submit Story
+          </Link>
+        </div>
       )}
 
       {!loading && stories.length > 0 && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div className="stories-list">
           {stories.map((s) => (
-            <div
-              key={s.id}
-              style={{
-                padding: 16,
-                borderRadius: 12,
-                background: 'var(--tg-theme-secondary-bg-color, #2d2d44)',
-                border: '1px solid var(--tg-theme-hint-color, #333)',
-              }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                <span style={{ fontWeight: 600 }}>Story #{s.id.slice(0, 8)}</span>
-                <span style={{ fontSize: 14, color: s.youtube_link ? '#a78bfa' : 'var(--tg-theme-hint-color)' }}>
-                  {statusLabel(s)}
-                </span>
+            <div key={s.id} className="story-card">
+              <div className="story-header">
+                <span className="story-id">Story #{s.id.slice(0, 8)}</span>
+                <span className={badgeClass(s)}>{statusLabel(s)}</span>
               </div>
-              <p style={{ margin: 0, fontSize: 14, color: 'var(--tg-theme-hint-color)', lineHeight: 1.4 }}>
+              <p className="story-content">
                 {s.content.length > 120 ? s.content.slice(0, 120) + '...' : s.content}
               </p>
               {s.youtube_link && (
-                <a
-                  href={s.youtube_link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ display: 'inline-block', marginTop: 12, color: 'var(--tg-theme-link-color)', textDecoration: 'none', fontSize: 14 }}
-                >
+                <a href={s.youtube_link} target="_blank" rel="noopener noreferrer" className="story-link">
                   📺 Watch video
                 </a>
               )}
