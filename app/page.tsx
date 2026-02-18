@@ -17,7 +17,7 @@ export default function Home() {
     <main className="home">
       <div className="home-hero">
         <div className="home-icon">✨</div>
-        <h1 className="home-title">Welcome</h1>
+        <h1 className="home-title">Submit Your Story!</h1>
         <p className="home-subtitle">
           Share your stories with Leyu & Mahi
         </p>
@@ -25,13 +25,13 @@ export default function Home() {
 
       <div className="home-actions">
         <Link href="/submit" className="btn-primary">
-          <span>📝</span> Submit a Story
+          <span>✏️</span> Submit Story
         </Link>
         <Link href="/stories" className="btn-secondary">
-          <span>📚</span> My Stories
+          <span>📄</span> My Submissions
         </Link>
-        <Link href="/about" className="home-link-about">
-          About
+        <Link href="/about" className="btn-secondary">
+          <span>❓</span> How It Works
         </Link>
       </div>
     </main>

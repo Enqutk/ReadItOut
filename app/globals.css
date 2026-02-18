@@ -8,17 +8,17 @@
   --bg: #0c0a12;
   --bg-card: rgba(30, 27, 42, 0.8);
   --bg-card-hover: rgba(40, 36, 58, 0.9);
-  --accent: #f97316;
-  --accent-light: #fb923c;
-  --accent-pink: #f472b6;
+  --accent: #a855f7;
+  --accent-light: #c084fc;
+  --accent-pink: #ec4899;
   --text: #f8fafc;
   --text-muted: #94a3b8;
   --border: rgba(248, 250, 252, 0.08);
   --success: #22c55e;
   --error: #ef4444;
-  --gradient-main: linear-gradient(135deg, #f97316 0%, #fb923c 50%, #f472b6 100%);
-  --gradient-subtle: linear-gradient(180deg, rgba(249, 115, 22, 0.15) 0%, transparent 50%);
-  --shadow-glow: 0 0 40px rgba(249, 115, 22, 0.15);
+  --gradient-main: linear-gradient(135deg, #a855f7 0%, #c084fc 40%, #ec4899 100%);
+  --gradient-subtle: linear-gradient(180deg, rgba(168, 85, 247, 0.15) 0%, transparent 50%);
+  --shadow-glow: 0 0 40px rgba(168, 85, 247, 0.2);
   --radius: 16px;
   --radius-sm: 12px;
 }
@@ -34,7 +34,7 @@ html, body {
 
 body {
   background: 
-    radial-gradient(ellipse 90% 60% at 50% -30%, rgba(249, 115, 22, 0.12), transparent 50%),
+    radial-gradient(ellipse 90% 60% at 50% -30%, rgba(168, 85, 247, 0.15), transparent 50%),
     var(--tg-theme-bg-color, var(--bg)) !important;
   color: var(--tg-theme-text-color, var(--text)) !important;
 }
@@ -59,12 +59,12 @@ button, a, input, select, textarea {
   text-decoration: none !important;
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 20px rgba(249, 115, 22, 0.35);
+  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.35);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(249, 115, 22, 0.4);
+  box-shadow: 0 8px 30px rgba(168, 85, 247, 0.4);
 }
 
 .btn-primary:active {
@@ -91,7 +91,7 @@ button, a, input, select, textarea {
 }
 
 .btn-secondary:hover {
-  background: rgba(249, 115, 22, 0.1);
+  background: rgba(168, 85, 247, 0.1);
   border-color: var(--accent-light);
 }
 
@@ -106,7 +106,7 @@ button, a, input, select, textarea {
 
 .card:hover {
   background: var(--bg-card-hover);
-  border-color: rgba(249, 115, 22, 0.2);
+  border-color: rgba(168, 85, 247, 0.2);
 }
 
 .link-back {
@@ -140,7 +140,7 @@ button, a, input, select, textarea {
 .input-field:focus, .input-select:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15);
 }
 
 .input-select {
@@ -172,7 +172,7 @@ button, a, input, select, textarea {
 .badge-pending { background: rgba(148, 163, 184, 0.2); color: var(--text-muted); }
 .badge-approved { background: rgba(34, 197, 94, 0.2); color: var(--success); }
 .badge-rejected { background: rgba(239, 68, 68, 0.2); color: var(--error); }
-.badge-featured { background: linear-gradient(135deg, rgba(249, 115, 22, 0.3), rgba(244, 114, 182, 0.3)); color: #fbbf24; }
+.badge-featured { background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(236, 72, 153, 0.3)); color: #fbbf24; }
 
 /* Home */
 .home {
@@ -290,7 +290,7 @@ button, a, input, select, textarea {
   transition: all 0.2s;
 }
 .story-card:hover {
-  border-color: rgba(249, 115, 22, 0.2);
+  border-color: rgba(168, 85, 247, 0.2);
   background: var(--bg-card-hover);
 }
 .story-header {
@@ -348,4 +348,124 @@ button, a, input, select, textarea {
   width: 22px;
   height: 22px;
   accent-color: var(--accent);
+}
+
+/* Emoji category picker */
+.emoji-picker {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.emoji-btn {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--bg-card);
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.emoji-btn:hover {
+  border-color: var(--accent-light);
+  transform: scale(1.05);
+}
+.emoji-btn-active {
+  border-color: var(--accent);
+  background: rgba(168, 85, 247, 0.2);
+  box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.3);
+}
+
+/* Admin Dashboard - light theme, distinct from user app */
+.admin-dashboard {
+  display: flex;
+  min-height: 100vh;
+  background: #f5f5f0;
+  font-family: 'Outfit', system-ui, sans-serif;
+}
+.admin-sidebar {
+  width: 220px;
+  background: #fff;
+  border-right: 1px solid #e5e5e0;
+  padding: 24px 16px;
+}
+.admin-logo {
+  font-size: 18px;
+  font-weight: 700;
+  color: #166534;
+  margin: 0 0 32px;
+}
+.admin-nav { display: flex; flex-direction: column; gap: 4px; }
+.admin-nav-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border: none;
+  background: transparent;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  text-align: left;
+}
+.admin-nav-item:hover { background: #f0fdf4; }
+.admin-nav-item.active {
+  background: #dcfce7;
+  color: #166534;
+  font-weight: 600;
+}
+.admin-count { color: #737373; font-weight: 400; }
+.admin-nav-item.active .admin-count { color: #166534; }
+.admin-back {
+  margin-top: auto;
+  padding-top: 24px;
+  font-size: 13px;
+  color: #737373;
+  text-decoration: none;
+}
+.admin-main { flex: 1; padding: 24px; overflow-x: auto; }
+.admin-header { margin-bottom: 24px; }
+.admin-header h1 { font-size: 22px; margin: 0 0 4px; color: #262626; }
+.admin-hint { font-size: 13px; color: #737373; margin: 0; }
+.admin-kanban {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  min-width: 700px;
+}
+.admin-column {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid #e5e5e0;
+}
+.admin-column h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #166534;
+  margin: 0 0 16px;
+}
+.admin-empty { font-size: 13px; color: #a3a3a3; padding: 16px 0; }
+.admin-loading { color: #737373; padding: 24px; }
+.story-card-admin {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  border: 1px solid #e5e5e0;
+  background: #fafaf8;
+}
+.story-card-bg {
+  position: absolute;
+  inset: 0;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 2 L22 12 L32 14 L22 16 L20 26 L18 16 L8 14 L18 12 Z' fill='%23166534'/%3E%3C/svg%3E");
+}
+.story-card-content { position: relative; padding: 16px; }
+.story-text { font-size: 14px; line-height: 1.5; color: #404040; margin: 0 0 12px; }
+.story-meta { font-size: 12px; color: #737373; display: flex; gap: 12px; }
+.story-card-admin .story-link { font-size: 13px; color: #166534; text-decoration: none; display: inline-block; margin-top: 8px; }
+.admin-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }

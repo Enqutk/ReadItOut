@@ -1,108 +1,126 @@
 import { useState, useEffect } from 'react';
+import Head from 'next/head';
 
 export default function Dashboard() {
   const [stories, setStories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [statusFilter, setStatusFilter] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('');
+  const [activeFilter, setActiveFilter] = useState('pending');
 
   useEffect(() => {
-    const params = new URLSearchParams();
-    if (statusFilter) params.set('status', statusFilter);
-    if (categoryFilter) params.set('category', categoryFilter);
-
-    fetch(`/api/stories?${params}`)
+    fetch('/api/stories')
       .then((r) => r.json())
       .then((data) => {
         setStories(data.stories || []);
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [statusFilter, categoryFilter]);
+  }, []);
 
-  const categories = [...new Set(stories.map((s) => s.category).filter(Boolean))];
+  const counts = { pending: 0, approved: 0, rejected: 0 };
+  stories.forEach((s) => {
+    if (counts[s.status] !== undefined) counts[s.status]++;
+  });
+  const featuredCount = stories.filter((s) => s.youtube_link).length;
+
+  const sidebarItems = [
+    { id: 'all', label: 'All Stories', count: stories.length },
+    { id: 'pending', label: 'New', count: counts.pending },
+    { id: 'approved', label: 'Shortlisted', count: counts.approved },
+    { id: 'rejected', label: 'Rejected', count: counts.rejected },
+    { id: 'featured', label: 'Featured', count: featuredCount },
+  ];
+
+  const newStories = stories.filter((s) => s.status === 'pending');
+  const shortlisted = stories.filter((s) => s.status === 'approved');
+  const featured = stories.filter((s) => s.youtube_link);
 
   return (
-    <div style={{ padding: 24, fontFamily: 'system-ui', maxWidth: 900, margin: '0 auto' }}>
-      <h1>Leyu & Mahi – Story Dashboard</h1>
-      <p style={{ color: '#666', marginBottom: 24 }}>
-        View and manage fan stories. Use Telegram for approve/reject.
-      </p>
-
-      <div style={{ display: 'flex', gap: 16, marginBottom: 24, flexWrap: 'wrap' }}>
-        <label>
-          Status:{' '}
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            style={{ padding: '6px 12px' }}
-          >
-            <option value="">All</option>
-            <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Rejected</option>
-          </select>
-        </label>
-        <label>
-          Category:{' '}
-          <select
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-            style={{ padding: '6px 12px' }}
-          >
-            <option value="">All</option>
-            {categories.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
+    <>
+      <Head>
+        <title>Story Inbox – Leyu & Mahi</title>
+      </Head>
+      <div className="admin-dashboard">
+        <aside className="admin-sidebar">
+          <h2 className="admin-logo">Story Inbox</h2>
+          <nav className="admin-nav">
+            {sidebarItems.map((item) => (
+              <button
+                key={item.id}
+                className={`admin-nav-item ${activeFilter === item.id ? 'active' : ''}`}
+                onClick={() => setActiveFilter(item.id)}
+              >
+                <span>{item.label}</span>
+                <span className="admin-count">({item.count})</span>
+              </button>
             ))}
-          </select>
-        </label>
-      </div>
+          </nav>
+          <a href="/" className="admin-back">← Back to app</a>
+        </aside>
 
-      {loading ? (
-        <p>Loading…</p>
-      ) : stories.length === 0 ? (
-        <p>No stories found.</p>
-      ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          {stories.map((s) => (
-            <div
-              key={s.id}
-              style={{
-                border: '1px solid #eee',
-                borderRadius: 8,
-                padding: 16,
-                backgroundColor: '#fafafa',
-              }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontSize: 13, color: '#666' }}>
-                <span>
-                  <code>{s.id.slice(0, 8)}</code> · {s.status} · {s.category || '—'}
-                  {s.youtube_link && ' · 📺'}
-                </span>
-                <span>{new Date(s.created_at).toLocaleString()}</span>
+        <main className="admin-main">
+          <header className="admin-header">
+            <h1>Manage Stories</h1>
+            <p className="admin-hint">Use Telegram /approve, /reject, /select_for_video for actions</p>
+          </header>
+
+          {loading ? (
+            <div className="admin-loading">Loading…</div>
+          ) : activeFilter === 'all' ? (
+            <div className="admin-kanban">
+              <div className="admin-column">
+                <h3>New Stories</h3>
+                {newStories.map((s) => (
+                  <StoryCard key={s.id} story={s} />
+                ))}
+                {newStories.length === 0 && <div className="admin-empty">No new stories</div>}
               </div>
-              <div style={{ marginBottom: 8 }}>
-                <strong>@{s.telegram_username || s.telegram_user_id}</strong>
+              <div className="admin-column">
+                <h3>Shortlisted</h3>
+                {shortlisted.map((s) => (
+                  <StoryCard key={s.id} story={s} />
+                ))}
+                {shortlisted.length === 0 && <div className="admin-empty">None yet</div>}
               </div>
-              <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{s.content}</p>
-              {s.rejection_reason && (
-                <p style={{ marginTop: 8, color: '#c00', fontSize: 14 }}>Rejected: {s.rejection_reason}</p>
-              )}
-              {s.youtube_link && (
-                <p style={{ marginTop: 8, fontSize: 14 }}>
-                  <a href={s.youtube_link} target="_blank" rel="noopener noreferrer">📺 Watch video</a>
-                </p>
+              <div className="admin-column">
+                <h3>Featured (in video)</h3>
+                {featured.map((s) => (
+                  <StoryCard key={s.id} story={s} />
+                ))}
+                {featured.length === 0 && <div className="admin-empty">None yet</div>}
+              </div>
+            </div>
+          ) : (
+            <div className="admin-list">
+              {(activeFilter === 'pending' ? newStories : activeFilter === 'approved' ? shortlisted : activeFilter === 'rejected' ? stories.filter((s) => s.status === 'rejected') : featured).map((s) => (
+                <StoryCard key={s.id} story={s} />
+              ))}
+              {((activeFilter === 'pending' ? newStories : activeFilter === 'approved' ? shortlisted : activeFilter === 'rejected' ? stories.filter((s) => s.status === 'rejected') : featured).length === 0) && (
+                <div className="admin-empty">No stories</div>
               )}
             </div>
-          ))}
-        </div>
-      )}
+          )}
+        </main>
+      </div>
+    </>
+  );
+}
 
-      <p style={{ marginTop: 32, fontSize: 14, color: '#888' }}>
-        <a href="/">← Back to home</a>
-      </p>
+function StoryCard({ story }) {
+  return (
+    <div className="story-card-admin">
+      <div className="story-card-bg" />
+      <div className="story-card-content">
+        <p className="story-text">{story.content.slice(0, 150)}{story.content.length > 150 ? '…' : ''}</p>
+        <div className="story-meta">
+          <span>#{story.id.slice(0, 8)}</span>
+          <span>@{story.telegram_username || story.telegram_user_id}</span>
+        </div>
+        {story.youtube_link && (
+          <a href={story.youtube_link} target="_blank" rel="noopener noreferrer" className="story-link">
+            📺 Watch video
+          </a>
+        )}
+      </div>
     </div>
   );
 }

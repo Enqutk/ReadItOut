@@ -4,13 +4,12 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 
 const CATEGORIES = [
-  { value: '', label: 'Choose a category...' },
-  { value: 'funny', label: '😂 Funny' },
-  { value: 'scary', label: '👻 Scary' },
-  { value: 'love', label: '❤️ Love' },
-  { value: 'sad', label: '😢 Sad' },
-  { value: 'inspiring', label: '✨ Inspiring' },
-  { value: 'other', label: '📌 Other' },
+  { value: 'funny', label: '😊', emoji: '😊' },
+  { value: 'scary', label: '😉', emoji: '😉' },
+  { value: 'love', label: '❤️', emoji: '❤️' },
+  { value: 'sad', label: '😢', emoji: '😢' },
+  { value: 'inspiring', label: '✨', emoji: '✨' },
+  { value: 'other', label: '📌', emoji: '📌' },
 ];
 
 export default function SubmitPage() {
@@ -79,20 +78,24 @@ export default function SubmitPage() {
   return (
     <main className="page">
       <Link href="/" className="link-back">← Back</Link>
-      <h1 className="page-title">Submit a Story</h1>
+      <h1 className="page-title">Submit Your Story!</h1>
 
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label className="form-label">Category</label>
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="input-select"
-          >
+          <label className="form-label">How does it feel?</label>
+          <div className="emoji-picker">
             {CATEGORIES.map((c) => (
-              <option key={c.value} value={c.value}>{c.label}</option>
+              <button
+                key={c.value}
+                type="button"
+                className={`emoji-btn ${category === c.value ? 'emoji-btn-active' : ''}`}
+                onClick={() => setCategory(c.value)}
+                title={c.value}
+              >
+                {c.emoji}
+              </button>
             ))}
-          </select>
+          </div>
         </div>
 
         <div className="form-group">
@@ -100,12 +103,12 @@ export default function SubmitPage() {
           <textarea
             value={story}
             onChange={(e) => setStory(e.target.value)}
-            placeholder="Write your story here... (min 20 characters)"
+            placeholder="Type your story here..."
             rows={8}
             minLength={20}
             maxLength={4096}
             className="input-field"
-            style={{ resize: 'vertical', minHeight: 160 }}
+            style={{ resize: 'vertical', minHeight: 180 }}
           />
           <span className="text-muted" style={{ fontSize: 12 }}>{story.length}/4096</span>
         </div>
@@ -123,8 +126,8 @@ export default function SubmitPage() {
           <p style={{ color: 'var(--error)', marginBottom: 20, fontSize: 14 }}>{error}</p>
         )}
 
-        <button type="submit" disabled={loading} className="btn-primary">
-          {loading ? 'Sending...' : 'Submit Story'}
+        <button type="submit" disabled={loading} className="btn-primary btn-send">
+          {loading ? 'Sending...' : 'Send to Leyu & Mahi'}
         </button>
       </form>
     </main>
