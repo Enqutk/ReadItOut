@@ -15,7 +15,7 @@ export default async function handler(req, res) {
   try {
     let query = supabase
       .from('stories')
-      .select('id, telegram_user_id, telegram_username, content, category, status, rejection_reason, created_at')
+      .select('id, telegram_user_id, telegram_username, content, category, status, rejection_reason, youtube_link, created_at')
       .order('created_at', { ascending: false })
       .limit(100);
 

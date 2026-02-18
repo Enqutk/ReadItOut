@@ -148,6 +148,20 @@ leyu_mahi_bot/
 
 ---
 
+## Sprint 4: Video Selection & Fan Notification ✅
+
+- [x] Tag 4–8 stories as "selected for video" (`/select_for_video`)
+- [x] Notify fans: featured → "Your story was read! Watch here: [link]"; rejected → "Story rejected because [reason]"
+- [x] Store notifications in Supabase
+
+**Usage:**
+- `/reject abc123 Sorry, not suitable` – Rejects story and **notifies the fan** automatically
+- `/select_for_video <youtube_url> <id1> <id2> <id3> <id4>` – Select 4–8 approved stories, tag with video link, notify each fan
+
+**Setup:** Run `supabase/migrations/002_notifications_and_video.sql` in Supabase SQL Editor.
+
+---
+
 ## Upcoming Sprints
 
-- **Sprint 4:** Fan notifications & direct messaging
+- **Sprint 5:** Direct messaging / Ask fans questions

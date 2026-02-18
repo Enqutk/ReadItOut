@@ -79,6 +79,7 @@ export default function Dashboard() {
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontSize: 13, color: '#666' }}>
                 <span>
                   <code>{s.id.slice(0, 8)}</code> · {s.status} · {s.category || '—'}
+                  {s.youtube_link && ' · 📺'}
                 </span>
                 <span>{new Date(s.created_at).toLocaleString()}</span>
               </div>
@@ -88,6 +89,11 @@ export default function Dashboard() {
               <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{s.content}</p>
               {s.rejection_reason && (
                 <p style={{ marginTop: 8, color: '#c00', fontSize: 14 }}>Rejected: {s.rejection_reason}</p>
+              )}
+              {s.youtube_link && (
+                <p style={{ marginTop: 8, fontSize: 14 }}>
+                  <a href={s.youtube_link} target="_blank" rel="noopener noreferrer">📺 Watch video</a>
+                </p>
               )}
             </div>
           ))}
