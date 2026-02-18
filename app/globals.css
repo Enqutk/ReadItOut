@@ -827,6 +827,35 @@ button, a, input, select, textarea {
   cursor: pointer;
 }
 .admin-reject-btn:hover { opacity: 0.9; }
+
+.admin-settings { max-width: 480px; }
+.admin-settings-section {
+  margin-bottom: 24px;
+  padding: 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.admin-settings-title { font-size: 16px; font-weight: 600; margin: 0 0 8px; color: var(--text); }
+.admin-settings-field { margin-top: 12px; }
+.admin-settings-field:first-of-type { margin-top: 0; }
+.admin-settings-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.admin-settings-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text);
+  cursor: pointer;
+}
+.admin-settings-check input { width: 18px; height: 18px; }
+
 .admin-list {
   display: flex;
   flex-direction: column;

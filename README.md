@@ -186,7 +186,7 @@ leyu_mahi_bot/
 
 **Social links:** Add `NEXT_PUBLIC_SOCIAL_YOUTUBE`, `NEXT_PUBLIC_SOCIAL_INSTAGRAM`, etc. to show Leyu & Mahi's links on the About page and home footer.
 
-**Popup (ads/events):** Set `NEXT_PUBLIC_POPUP_ENABLED=true`, `NEXT_PUBLIC_POPUP_TITLE`, `NEXT_PUBLIC_POPUP_MESSAGE`, etc. to show a promotional popup (once per session). Change `NEXT_PUBLIC_POPUP_ID` to show a new popup.
+**Popup (ads/events):** Set `NEXT_PUBLIC_POPUP_ENABLED=true`, `NEXT_PUBLIC_POPUP_TITLE`, etc. to show a promotional popup (once per session). Or use **Settings** in the admin dashboard to edit popup and social links in the app (stored in DB; run `supabase/migrations/004_app_config.sql` first).
 
 **Setup:**
 1. Set `NEXT_PUBLIC_APP_URL` in Vercel env (e.g. `https://read-it-out-ten.vercel.app`)

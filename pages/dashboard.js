@@ -13,11 +13,20 @@ export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [rejectingId, setRejectingId] = useState(null);
   const [rejectReason, setRejectReason] = useState('');
+  const [initData, setInitData] = useState('');
+  const [config, setConfig] = useState({ socialLinks: {}, popup: null });
+  const [configSaving, setConfigSaving] = useState(false);
 
   const selectFilter = (id) => {
     setActiveFilter(id);
     setSidebarOpen(false);
   };
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.Telegram?.WebApp?.initData) {
+      setInitData(window.Telegram.WebApp.initData);
+    }
+  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -29,6 +38,23 @@ export default function Dashboard() {
       })
       .catch(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (activeFilter === 'settings' && initData) {
+      fetch('/api/admin/app-config', {
+        method: 'GET',
+        headers: { 'X-Telegram-Init-Data': initData },
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          setConfig({
+            socialLinks: data.socialLinks || {},
+            popup: data.popup || { id: '1', title: '', message: '', link: '', linkLabel: 'Learn more', enabled: false },
+          });
+        })
+        .catch(() => {});
+    }
+  }, [activeFilter, initData]);
 
   const counts = { pending: 0, approved: 0, rejected: 0 };
   stories.forEach((s) => {
@@ -44,6 +70,7 @@ export default function Dashboard() {
     { id: 'approved', label: 'Shortlisted', count: counts.approved },
     { id: 'rejected', label: 'Rejected', count: counts.rejected },
     { id: 'featured', label: 'Already read (contact)', count: featuredCount },
+    { id: 'settings', label: 'Settings', count: '' },
   ];
 
   const byCategory = (list) =>
@@ -129,6 +156,43 @@ export default function Dashboard() {
     }
   };
 
+  const handleSaveConfig = async () => {
+    if (!initData) {
+      alert('Open the dashboard from the Telegram app to save settings.');
+      return;
+    }
+    setConfigSaving(true);
+    try {
+      const res = await fetch('/api/admin/app-config', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Telegram-Init-Data': initData,
+        },
+        body: JSON.stringify({
+          socialLinks: config.socialLinks,
+          popup: config.popup
+            ? {
+                enabled: !!config.popup.enabled,
+                id: config.popup.id || '1',
+                title: config.popup.title || '',
+                message: config.popup.message || '',
+                link: config.popup.link || '',
+                linkLabel: config.popup.linkLabel || 'Learn more',
+              }
+            : { enabled: false, id: '1', title: '', message: '', link: '', linkLabel: 'Learn more' },
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed');
+      alert('Settings saved.');
+    } catch (err) {
+      alert(err.message || 'Could not save. Open from Telegram app.');
+    } finally {
+      setConfigSaving(false);
+    }
+  };
+
   return (
     <>
       <Head>
@@ -152,7 +216,7 @@ export default function Dashboard() {
                 onClick={() => selectFilter(item.id)}
               >
                 <span>{item.label}</span>
-                <span className="admin-count">({item.count})</span>
+                {item.count !== '' && <span className="admin-count">({item.count})</span>}
               </button>
             ))}
           </nav>
@@ -177,27 +241,29 @@ export default function Dashboard() {
             </p>
           </header>
 
-          <div className="admin-filters">
-            <input
-              type="text"
-              placeholder="Search stories..."
-              value={searchFilter}
-              onChange={(e) => setSearchFilter(e.target.value)}
-              className="admin-search"
-            />
-            <select
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-              className="admin-select"
-            >
-              <option value="">All categories</option>
-              {categories.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
-          </div>
+          {activeFilter !== 'settings' && (
+            <div className="admin-filters">
+              <input
+                type="text"
+                placeholder="Search stories..."
+                value={searchFilter}
+                onChange={(e) => setSearchFilter(e.target.value)}
+                className="admin-search"
+              />
+              <select
+                value={categoryFilter}
+                onChange={(e) => setCategoryFilter(e.target.value)}
+                className="admin-select"
+              >
+                <option value="">All categories</option>
+                {categories.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           {rejectingId && (
             <div className="admin-reject-modal">
@@ -222,6 +288,140 @@ export default function Dashboard() {
             </div>
           )}
 
+          {activeFilter === 'settings' && (
+            <div className="admin-settings">
+              <section className="admin-settings-section">
+                <h3 className="admin-settings-title">Social links</h3>
+                <p className="admin-hint">Shown on the mini app About page and home. Leave blank to hide.</p>
+                {['youtube', 'instagram', 'tiktok', 'twitter', 'discord'].map((key) => (
+                  <div key={key} className="admin-settings-field">
+                    <label className="admin-settings-label">{key}</label>
+                    <input
+                      type="url"
+                      placeholder={`https://${key}.com/...`}
+                      value={config.socialLinks[key] || ''}
+                      onChange={(e) =>
+                        setConfig((c) => ({
+                          ...c,
+                          socialLinks: { ...c.socialLinks, [key]: e.target.value },
+                        }))
+                      }
+                      className="admin-search"
+                    />
+                  </div>
+                ))}
+              </section>
+              <section className="admin-settings-section">
+                <h3 className="admin-settings-title">Popup (ad / event)</h3>
+                <p className="admin-hint">Shown once per session when users open the mini app.</p>
+                <div className="admin-settings-field">
+                  <label className="admin-settings-check">
+                    <input
+                      type="checkbox"
+                      checked={!!config.popup?.enabled}
+                      onChange={(e) =>
+                        setConfig((c) => ({
+                          ...c,
+                          popup: { ...(c.popup || {}), enabled: e.target.checked },
+                        }))
+                      }
+                    />
+                    Enable popup
+                  </label>
+                </div>
+                <div className="admin-settings-field">
+                  <label className="admin-settings-label">Title</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Upcoming event"
+                    value={config.popup?.title || ''}
+                    onChange={(e) =>
+                      setConfig((c) => ({
+                        ...c,
+                        popup: { ...(c.popup || {}), title: e.target.value },
+                      }))
+                    }
+                    className="admin-search"
+                  />
+                </div>
+                <div className="admin-settings-field">
+                  <label className="admin-settings-label">Message</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Join us live this Saturday!"
+                    value={config.popup?.message || ''}
+                    onChange={(e) =>
+                      setConfig((c) => ({
+                        ...c,
+                        popup: { ...(c.popup || {}), message: e.target.value },
+                      }))
+                    }
+                    className="admin-search"
+                  />
+                </div>
+                <div className="admin-settings-field">
+                  <label className="admin-settings-label">Link (optional)</label>
+                  <input
+                    type="url"
+                    placeholder="https://..."
+                    value={config.popup?.link || ''}
+                    onChange={(e) =>
+                      setConfig((c) => ({
+                        ...c,
+                        popup: { ...(c.popup || {}), link: e.target.value },
+                      }))
+                    }
+                    className="admin-search"
+                  />
+                </div>
+                <div className="admin-settings-field">
+                  <label className="admin-settings-label">Link button text</label>
+                  <input
+                    type="text"
+                    placeholder="Learn more"
+                    value={config.popup?.linkLabel || 'Learn more'}
+                    onChange={(e) =>
+                      setConfig((c) => ({
+                        ...c,
+                        popup: { ...(c.popup || {}), linkLabel: e.target.value },
+                      }))
+                    }
+                    className="admin-search"
+                  />
+                </div>
+                <div className="admin-settings-field">
+                  <label className="admin-settings-label">Popup version (change to show again to users)</label>
+                  <input
+                    type="text"
+                    placeholder="1"
+                    value={config.popup?.id || '1'}
+                    onChange={(e) =>
+                      setConfig((c) => ({
+                        ...c,
+                        popup: { ...(c.popup || {}), id: e.target.value || '1' },
+                      }))
+                    }
+                    className="admin-search"
+                  />
+                </div>
+              </section>
+              <button
+                type="button"
+                onClick={handleSaveConfig}
+                disabled={configSaving || !initData}
+                className="admin-video-btn"
+                style={{ marginTop: 16 }}
+              >
+                {configSaving ? 'Saving…' : 'Save settings'}
+              </button>
+              {!initData && (
+                <p className="admin-hint" style={{ marginTop: 12 }}>
+                  Open this dashboard from the Telegram app to save (admin auth required).
+                </p>
+              )}
+            </div>
+          )}
+
           {selectedIds.size > 0 && canSelect && (
             <div className="admin-video-bar">
               <span>
@@ -243,9 +443,9 @@ export default function Dashboard() {
             </div>
           )}
 
-          {loading ? (
+          {loading && activeFilter !== 'settings' ? (
             <div className="admin-loading">Loading…</div>
-          ) : activeFilter === 'all' ? (
+          ) : activeFilter === 'settings' ? null : activeFilter === 'all' ? (
             <div className="admin-kanban">
               <div className="admin-column">
                 <h3>New</h3>
