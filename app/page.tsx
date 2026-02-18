@@ -1,17 +1,33 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 
 export default function Home() {
+  const [isAdmin, setIsAdmin] = useState(false);
+
   useEffect(() => {
     const tg = window.Telegram?.WebApp;
     if (tg) {
       tg.ready();
       tg.expand();
       tg.MainButton?.hide();
+      fetch(`/api/me?initData=${encodeURIComponent(tg.initData || '')}`)
+        .then((r) => r.json())
+        .then((data) => setIsAdmin(data.isAdmin === true))
+        .catch(() => {});
     }
   }, []);
+
+  const openDashboard = () => {
+    const url = typeof window !== 'undefined' ? `${window.location.origin}/dashboard` : '/dashboard';
+    const tg = (window as any).Telegram?.WebApp;
+    if (tg?.openLink) {
+      tg.openLink(url);
+    } else {
+      window.open(url);
+    }
+  };
 
   return (
     <main className="home">
@@ -33,6 +49,11 @@ export default function Home() {
         <Link href="/about" className="btn-secondary">
           <span>❓</span> How It Works
         </Link>
+        {isAdmin && (
+          <button type="button" onClick={openDashboard} className="btn-admin">
+            <span>⚙️</span> Admin Dashboard
+          </button>
+        )}
       </div>
     </main>
   );

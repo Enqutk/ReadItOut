@@ -3,6 +3,11 @@ import Head from 'next/head';
 
 export default function Dashboard() {
   const [stories, setStories] = useState([]);
+
+  useEffect(() => {
+    document.body.classList.add('admin-page');
+    return () => document.body.classList.remove('admin-page');
+  }, []);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('pending');
 
@@ -54,7 +59,7 @@ export default function Dashboard() {
               </button>
             ))}
           </nav>
-          <a href="/" className="admin-back">← Back to app</a>
+          <a href="/" className="admin-back">← Back to Mini App</a>
         </aside>
 
         <main className="admin-main">
