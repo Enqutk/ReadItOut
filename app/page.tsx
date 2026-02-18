@@ -19,16 +19,6 @@ export default function Home() {
     }
   }, []);
 
-  const openDashboard = () => {
-    const url = typeof window !== 'undefined' ? `${window.location.origin}/dashboard` : '/dashboard';
-    const tg = (window as any).Telegram?.WebApp;
-    if (tg?.openLink) {
-      tg.openLink(url);
-    } else {
-      window.open(url);
-    }
-  };
-
   return (
     <main className="home">
       <div className="home-hero">
@@ -50,9 +40,9 @@ export default function Home() {
           <span>❓</span> How It Works
         </Link>
         {isAdmin && (
-          <button type="button" onClick={openDashboard} className="btn-admin">
+          <Link href="/dashboard" className="btn-admin">
             <span>⚙️</span> Admin Dashboard
-          </button>
+          </Link>
         )}
       </div>
     </main>

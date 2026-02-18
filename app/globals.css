@@ -234,12 +234,13 @@ button, a, input, select, textarea {
   width: 100%;
   padding: 14px 24px;
   background: rgba(22, 101, 52, 0.2);
-  color: #166534;
+  color: #166534 !important;
   border: 2px solid #166534;
   border-radius: var(--radius);
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
+  text-decoration: none !important;
 }
 
 /* Page layout */
