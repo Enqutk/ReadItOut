@@ -120,8 +120,18 @@ leyu_mahi_bot/
 
 ---
 
+## Sprint 2: Fan Story Submission ✅
+
+- [x] `/submit_story` command
+- [x] Validate story (20–4096 chars) & store in Supabase
+- [x] Unique ID per story (Supabase UUID)
+- [x] Confirmation message: "Story submitted successfully!"
+
+**Usage:** `/submit_story Your story text here...`
+
+---
+
 ## Upcoming Sprints
 
-- **Sprint 2:** Fan story submission flow
 - **Sprint 3:** Admin dashboard & approval/rejection
 - **Sprint 4:** Fan notifications & direct messaging
