@@ -102,11 +102,13 @@ Both should insert a test story into Supabase. Check in **Supabase → Table Edi
 ```
 leyu_mahi_bot/
 ├── lib/
-│   ├── bot.js          # Telegraf bot + /start handler
+│   ├── bot.js          # Telegraf bot + commands
 │   └── supabase.js     # Supabase client
 ├── pages/
+│   ├── dashboard.js    # Admin story dashboard
 │   └── api/
 │       ├── telegram.js # Webhook endpoint
+│       ├── stories.js  # Stories API for dashboard
 │       └── test-story.js
 ├── supabase/
 │   └── migrations/
@@ -131,7 +133,21 @@ leyu_mahi_bot/
 
 ---
 
+## Sprint 3: Admin Panel / Story Management ✅
+
+- [x] Admin commands: `/list_pending`, `/approve <id>`, `/reject <id> [reason]`
+- [x] Store admin actions in Supabase (status updates)
+- [x] Optional: Next.js dashboard at `/dashboard` (filter by status/category)
+
+**Setup:** Add your Telegram user ID(s) to `ADMIN_TELEGRAM_IDS` in `.env.local` (comma-separated). Get your ID from [@userinfobot](https://t.me/userinfobot).
+
+**Usage:**
+- `/list_pending` – List pending stories
+- `/approve abc123` – Approve story (use short ID from list)
+- `/reject abc123 Sorry, not suitable` – Reject with optional reason
+
+---
+
 ## Upcoming Sprints
 
-- **Sprint 3:** Admin dashboard & approval/rejection
 - **Sprint 4:** Fan notifications & direct messaging

@@ -4,7 +4,8 @@ export default function Home() {
       <h1>Leyu & Mahi Bot</h1>
       <p>Fan story submission bot is running.</p>
       <p>
-        <a href="/api/test-story">Insert test story</a> (Sprint 1 verification)
+        <a href="/dashboard">Story dashboard</a> ·{' '}
+        <a href="/api/test-story">Insert test story</a>
       </p>
     </div>
   );
