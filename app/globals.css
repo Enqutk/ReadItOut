@@ -256,6 +256,26 @@ button, a, input, select, textarea {
   transform: translateY(-2px);
 }
 
+.home-actions-stable { min-height: 220px; }
+.home-social-stable { min-height: 90px; }
+.home-skeleton-btn {
+  height: 58px;
+  border-radius: var(--radius);
+  background: rgba(168, 85, 247, 0.1);
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+.home-skeleton-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(168, 85, 247, 0.1);
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
 .btn-admin {
   display: flex;
   align-items: center;
@@ -360,6 +380,15 @@ button, a, input, select, textarea {
 
 /* Social links (About page) */
 .social-links-card { margin-top: 24px; }
+.social-links-card-stable { min-height: 100px; }
+.social-skeleton {
+  width: 120px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  background: rgba(168, 85, 247, 0.1);
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+.social-links-empty { font-size: 14px; color: var(--text-muted); margin: 0; }
 .social-links-title {
   font-size: 16px;
   font-weight: 600;

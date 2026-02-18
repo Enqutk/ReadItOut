@@ -12,6 +12,7 @@ const SOCIAL_ICONS = {
 };
 
 export default function AboutPage() {
+  const [ready, setReady] = useState(false);
   const [socialLinks, setSocialLinks] = useState<Record<string, string>>({});
 
   useEffect(() => {
@@ -24,7 +25,8 @@ export default function AboutPage() {
     fetch('/api/app-config')
       .then((r) => r.json())
       .then((data) => setSocialLinks(data.socialLinks || {}))
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setReady(true));
   }, []);
 
   const links = Object.entries(socialLinks);
@@ -46,11 +48,17 @@ export default function AboutPage() {
         </p>
       </div>
 
-      {links.length > 0 && (
-        <div className="card social-links-card">
-          <h3 className="social-links-title">Follow Leyu & Mahi</h3>
-          <div className="social-links">
-            {links.map(([key, url]) => (
+      <div className="card social-links-card social-links-card-stable">
+        <h3 className="social-links-title">Follow Leyu & Mahi</h3>
+        <div className="social-links">
+          {!ready ? (
+            <>
+              <div className="social-skeleton" />
+              <div className="social-skeleton" />
+              <div className="social-skeleton" />
+            </>
+          ) : links.length > 0 ? (
+            links.map(([key, url]) => (
               <a
                 key={key}
                 href={url}
@@ -61,10 +69,12 @@ export default function AboutPage() {
                 <span className="social-icon">{SOCIAL_ICONS[key as keyof typeof SOCIAL_ICONS] || '🔗'}</span>
                 <span className="social-label">{key}</span>
               </a>
-            ))}
-          </div>
+            ))
+          ) : (
+            <p className="social-links-empty">No links yet</p>
+          )}
         </div>
-      )}
+      </div>
     </main>
   );
 }
