@@ -3,8 +3,11 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 
+const SOCIAL_ICONS = { youtube: '▶️', instagram: '📷', tiktok: '🎵', twitter: '𝕏', discord: '💬' };
+
 export default function Home() {
   const [isAdmin, setIsAdmin] = useState(false);
+  const [socialLinks, setSocialLinks] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const tg = window.Telegram?.WebApp;
@@ -17,7 +20,13 @@ export default function Home() {
         .then((data) => setIsAdmin(data.isAdmin === true))
         .catch(() => {});
     }
+    fetch('/api/app-config')
+      .then((r) => r.json())
+      .then((data) => setSocialLinks(data.socialLinks || {}))
+      .catch(() => {});
   }, []);
+
+  const links = Object.entries(socialLinks);
 
   return (
     <main className="home">
@@ -30,12 +39,16 @@ export default function Home() {
       </div>
 
       <div className="home-actions">
-        <Link href="/submit" className="btn-primary">
-          <span>✏️</span> Submit Story
-        </Link>
-        <Link href="/stories" className="btn-secondary">
-          <span>📄</span> My Submissions
-        </Link>
+        {!isAdmin && (
+          <>
+            <Link href="/submit" className="btn-primary">
+              <span>✏️</span> Submit Story
+            </Link>
+            <Link href="/stories" className="btn-secondary">
+              <span>📄</span> My Submissions
+            </Link>
+          </>
+        )}
         <Link href="/about" className="btn-secondary">
           <span>❓</span> How It Works
         </Link>
@@ -45,6 +58,19 @@ export default function Home() {
           </Link>
         )}
       </div>
+
+      {links.length > 0 && (
+        <div className="home-social">
+          <p className="home-social-label">Follow us</p>
+          <div className="home-social-links">
+            {links.map(([key, url]) => (
+              <a key={key} href={url} target="_blank" rel="noopener noreferrer" className="home-social-link" aria-label={key}>
+                {SOCIAL_ICONS[key as keyof typeof SOCIAL_ICONS] || '🔗'}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
     </main>
   );
 }

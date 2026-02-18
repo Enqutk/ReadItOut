@@ -1,7 +1,10 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import Script from 'next/script';
+import dynamic from 'next/dynamic';
 import './globals.css';
+
+const Popup = dynamic(() => import('./components/Popup'), { ssr: false });
 
 export const metadata: Metadata = {
   title: 'Leyu & Mahi',
@@ -21,7 +24,10 @@ export default function RootLayout({
           strategy="beforeInteractive"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Popup />
+      </body>
     </html>
   );
 }

@@ -182,6 +182,12 @@ leyu_mahi_bot/
 
 **Flow:** User opens bot → taps "Open App" → Next.js loads in webview → Submit/View stories.
 
+**Admin experience:** Admins see only "How It Works" and "Admin Dashboard" on home – no Submit Story or My Submissions.
+
+**Social links:** Add `NEXT_PUBLIC_SOCIAL_YOUTUBE`, `NEXT_PUBLIC_SOCIAL_INSTAGRAM`, etc. to show Leyu & Mahi's links on the About page and home footer.
+
+**Popup (ads/events):** Set `NEXT_PUBLIC_POPUP_ENABLED=true`, `NEXT_PUBLIC_POPUP_TITLE`, `NEXT_PUBLIC_POPUP_MESSAGE`, etc. to show a promotional popup (once per session). Change `NEXT_PUBLIC_POPUP_ID` to show a new popup.
+
 **Setup:**
 1. Set `NEXT_PUBLIC_APP_URL` in Vercel env (e.g. `https://read-it-out-ten.vercel.app`)
 2. In [@BotFather](https://t.me/BotFather): `/mybots` → your bot → **Bot Settings** → **Menu Button** → set URL to your app URL (optional; the inline button also works)
