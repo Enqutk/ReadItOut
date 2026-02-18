@@ -10,23 +10,12 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { status, category, search } = req.query;
-
   try {
-    let query = supabase
+    const { data, error } = await supabase
       .from('stories')
       .select('id, telegram_user_id, telegram_username, content, category, status, rejection_reason, youtube_link, created_at')
       .order('created_at', { ascending: true })
       .limit(200);
-
-    if (status) query = query.eq('status', status);
-    if (category) query = query.eq('category', category);
-    if (search && search.trim()) {
-      const term = `%${search.trim()}%`;
-      query = query.or(`content.ilike.${term},telegram_username.ilike.${term}`);
-    }
-
-    const { data, error } = await query;
 
     if (error) {
       return res.status(500).json({ error: error.message });
