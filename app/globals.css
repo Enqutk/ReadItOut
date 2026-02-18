@@ -649,6 +649,59 @@ button, a, input, select, textarea {
   margin-top: 8px;
 }
 .story-card-admin .story-link:hover { color: var(--accent); }
+.story-card-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 12px; }
+.story-reject-btn {
+  padding: 8px 14px;
+  background: transparent;
+  color: var(--error);
+  border: 1px solid var(--error);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.story-reject-btn:hover { background: rgba(239, 68, 68, 0.15); }
+.story-mark-read-btn {
+  padding: 8px 14px;
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.story-mark-read-btn:hover { background: rgba(168, 85, 247, 0.15); }
+.admin-reject-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  padding: 16px;
+}
+.admin-reject-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  max-width: 400px;
+  width: 100%;
+}
+.admin-reject-box h4 { margin: 0 0 16px; color: var(--text); }
+.admin-reject-actions { display: flex; gap: 12px; margin-top: 16px; }
+.admin-reject-btn {
+  padding: 12px 20px;
+  background: var(--error);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+.admin-reject-btn:hover { opacity: 0.9; }
 .admin-list {
   display: flex;
   flex-direction: column;

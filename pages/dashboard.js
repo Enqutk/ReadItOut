@@ -11,6 +11,8 @@ export default function Dashboard() {
   const [youtubeLink, setYoutubeLink] = useState('');
   const [linking, setLinking] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [rejectingId, setRejectingId] = useState(null);
+  const [rejectReason, setRejectReason] = useState('');
 
   const selectFilter = (id) => {
     setActiveFilter(id);
@@ -33,11 +35,14 @@ export default function Dashboard() {
     if (counts[s.status] !== undefined) counts[s.status]++;
   });
   const featuredCount = stories.filter((s) => s.youtube_link).length;
+  const newCount = stories.filter((s) => s.status === 'pending' && !s.read_at).length;
+  const reviewedCount = stories.filter((s) => s.status === 'pending' && s.read_at).length;
   const categories = [...new Set(stories.map((s) => s.category).filter(Boolean))];
 
   const sidebarItems = [
     { id: 'all', label: 'All Stories', count: stories.length },
-    { id: 'pending', label: 'New', count: counts.pending },
+    { id: 'pending', label: 'New', count: newCount },
+    { id: 'reviewed', label: 'Reviewed', count: reviewedCount },
     { id: 'approved', label: 'Shortlisted', count: counts.approved },
     { id: 'rejected', label: 'Rejected', count: counts.rejected },
     { id: 'featured', label: 'Featured', count: featuredCount },
@@ -55,7 +60,8 @@ export default function Dashboard() {
     );
   };
 
-  const newStories = bySearch(byCategory(stories.filter((s) => s.status === 'pending')));
+  const newStories = bySearch(byCategory(stories.filter((s) => s.status === 'pending' && !s.read_at)));
+  const reviewedStories = bySearch(byCategory(stories.filter((s) => s.status === 'pending' && s.read_at)));
   const shortlisted = bySearch(byCategory(stories.filter((s) => s.status === 'approved')));
   const featured = bySearch(byCategory(stories.filter((s) => s.youtube_link)));
 
@@ -93,18 +99,56 @@ export default function Dashboard() {
     }
   };
 
+  const rejectedStories = bySearch(byCategory(stories.filter((s) => s.status === 'rejected')));
   const filteredStories =
     activeFilter === 'pending'
       ? newStories
+      : activeFilter === 'reviewed'
+      ? reviewedStories
       : activeFilter === 'approved'
       ? shortlisted
       : activeFilter === 'rejected'
-      ? stories.filter((s) => s.status === 'rejected')
+      ? rejectedStories
       : activeFilter === 'featured'
       ? featured
-      : stories;
+      : bySearch(byCategory(stories));
 
-  const canSelect = ['pending', 'approved', 'all'].includes(activeFilter);
+  const canSelect = ['pending', 'approved', 'reviewed', 'all'].includes(activeFilter);
+
+  const handleMarkRead = async (storyId) => {
+    try {
+      const res = await fetch('/api/admin/mark-read', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ storyId }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed');
+      const refreshed = await fetch('/api/stories').then((r) => r.json());
+      setStories(refreshed?.stories || []);
+    } catch (err) {
+      alert(err.message || 'Something went wrong');
+    }
+  };
+
+  const handleReject = async () => {
+    if (!rejectingId) return;
+    try {
+      const res = await fetch('/api/admin/reject', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ storyId: rejectingId, reason: rejectReason }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed');
+      setRejectingId(null);
+      setRejectReason('');
+      const refreshed = await fetch('/api/stories').then((r) => r.json());
+      setStories(refreshed?.stories || []);
+    } catch (err) {
+      alert(err.message || 'Something went wrong');
+    }
+  };
 
   return (
     <>
@@ -176,6 +220,29 @@ export default function Dashboard() {
             </select>
           </div>
 
+          {rejectingId && (
+            <div className="admin-reject-modal">
+              <div className="admin-reject-box">
+                <h4>Reject story</h4>
+                <input
+                  type="text"
+                  placeholder="Reason (optional)"
+                  value={rejectReason}
+                  onChange={(e) => setRejectReason(e.target.value)}
+                  className="admin-search"
+                />
+                <div className="admin-reject-actions">
+                  <button onClick={handleReject} className="admin-reject-btn">
+                    Reject & notify
+                  </button>
+                  <button onClick={() => { setRejectingId(null); setRejectReason(''); }} className="admin-clear-btn">
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {selectedIds.size > 0 && canSelect && (
             <div className="admin-video-bar">
               <span>
@@ -202,7 +269,7 @@ export default function Dashboard() {
           ) : activeFilter === 'all' ? (
             <div className="admin-kanban">
               <div className="admin-column">
-                <h3>New Stories</h3>
+                <h3>New</h3>
                 {newStories.map((s) => (
                   <StoryCard
                     key={s.id}
@@ -210,9 +277,28 @@ export default function Dashboard() {
                     selectable={canSelect}
                     selected={selectedIds.has(s.id)}
                     onToggle={() => toggleSelect(s.id)}
+                    onReject={() => setRejectingId(s.id)}
+                    showReject
+                    onMarkRead={() => handleMarkRead(s.id)}
+                    showMarkRead
                   />
                 ))}
                 {newStories.length === 0 && <div className="admin-empty">No new stories</div>}
+              </div>
+              <div className="admin-column">
+                <h3>Reviewed</h3>
+                {reviewedStories.map((s) => (
+                  <StoryCard
+                    key={s.id}
+                    story={s}
+                    selectable={canSelect}
+                    selected={selectedIds.has(s.id)}
+                    onToggle={() => toggleSelect(s.id)}
+                    onReject={() => setRejectingId(s.id)}
+                    showReject
+                  />
+                ))}
+                {reviewedStories.length === 0 && <div className="admin-empty">None yet</div>}
               </div>
               <div className="admin-column">
                 <h3>Shortlisted</h3>
@@ -223,6 +309,7 @@ export default function Dashboard() {
                     selectable={canSelect}
                     selected={selectedIds.has(s.id)}
                     onToggle={() => toggleSelect(s.id)}
+                    showReject={false}
                   />
                 ))}
                 {shortlisted.length === 0 && <div className="admin-empty">None yet</div>}
@@ -230,7 +317,7 @@ export default function Dashboard() {
               <div className="admin-column">
                 <h3>Featured (in video)</h3>
                 {featured.map((s) => (
-                  <StoryCard key={s.id} story={s} />
+                  <StoryCard key={s.id} story={s} showReject={false} />
                 ))}
                 {featured.length === 0 && <div className="admin-empty">None yet</div>}
               </div>
@@ -239,11 +326,15 @@ export default function Dashboard() {
             <div className="admin-list">
               {filteredStories.map((s) => (
                 <StoryCard
-                  key={s.id}
-                  story={s}
-                  selectable={canSelect}
-                  selected={selectedIds.has(s.id)}
-                  onToggle={() => toggleSelect(s.id)}
+                    key={s.id}
+                    story={s}
+                    selectable={canSelect}
+                    selected={selectedIds.has(s.id)}
+                    onToggle={() => toggleSelect(s.id)}
+                    onReject={s.status === 'pending' ? () => setRejectingId(s.id) : null}
+                    showReject={s.status === 'pending'}
+                    onMarkRead={s.status === 'pending' && !s.read_at ? () => handleMarkRead(s.id) : null}
+                    showMarkRead={s.status === 'pending' && !s.read_at}
                 />
               ))}
               {filteredStories.length === 0 && <div className="admin-empty">No stories</div>}
@@ -255,7 +346,7 @@ export default function Dashboard() {
   );
 }
 
-function StoryCard({ story, selectable, selected, onToggle }) {
+function StoryCard({ story, selectable, selected, onToggle, onReject, showReject, onMarkRead, showMarkRead }) {
   const num = story.story_number != null ? story.story_number : null;
   return (
     <div className={`story-card-admin ${selected ? 'selected' : ''}`}>
@@ -273,11 +364,23 @@ function StoryCard({ story, selectable, selected, onToggle }) {
           <span className="story-num">#{num != null ? num : story.id.slice(0, 8)}</span>
           <span>@{story.telegram_username || story.telegram_user_id}</span>
         </div>
-        {story.youtube_link && (
-          <a href={story.youtube_link} target="_blank" rel="noopener noreferrer" className="story-link">
-            📺 Watch video
-          </a>
-        )}
+        <div className="story-card-actions">
+          {story.youtube_link && (
+            <a href={story.youtube_link} target="_blank" rel="noopener noreferrer" className="story-link">
+              📺 Watch video
+            </a>
+          )}
+          {showMarkRead && onMarkRead && (
+            <button type="button" onClick={onMarkRead} className="story-mark-read-btn">
+              Mark as read
+            </button>
+          )}
+          {showReject && onReject && (
+            <button type="button" onClick={onReject} className="story-reject-btn">
+              Reject
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

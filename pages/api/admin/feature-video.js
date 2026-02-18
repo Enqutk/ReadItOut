@@ -52,7 +52,11 @@ export default async function handler(req, res) {
     for (const s of stories) {
       await supabase
         .from('stories')
-        .update({ youtube_link: url, updated_at: new Date().toISOString() })
+        .update({
+          youtube_link: url,
+          status: 'approved',
+          updated_at: new Date().toISOString(),
+        })
         .eq('id', s.id);
       if (await sendTelegram(s.telegram_user_id, fanMessage)) notified++;
     }
