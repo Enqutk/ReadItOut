@@ -156,7 +156,7 @@ leyu_mahi_bot/
 
 **Usage:**
 - `/reject abc123 Sorry, not suitable` – Rejects story and **notifies the fan** automatically
-- `/select_for_video <youtube_url> <id1> <id2> <id3> <id4>` – Select 4–8 approved stories, tag with video link, notify each fan
+- `/select_for_video <youtube_url> <id1> <id2> ...` – Select approved stories, tag with video link, notify each fan
 
 **Setup:** Run `supabase/migrations/002_notifications_and_video.sql` in Supabase SQL Editor.
 
