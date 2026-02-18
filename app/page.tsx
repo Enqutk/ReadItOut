@@ -44,7 +44,7 @@ export default function Home() {
 
   return (
     <main className="home">
-      <div className="home-hero">
+      <div className="home-hero-card">
         <div className="home-avatars">
           {profile?.photoTogether ? (
             <img src={profile.photoTogether} alt="Leyu & Mahi" className="home-avatar home-avatar-together" />
@@ -58,8 +58,8 @@ export default function Home() {
           )}
         </div>
         <h1 className="home-title">Leyu & Mahi</h1>
-        <p className="home-subtitle">{tagline}</p>
-        <p className="home-cta">Share your story. We read the best ones in our videos.</p>
+        <p className="home-tagline">{tagline}</p>
+        <p className="home-desc">Share your story. We read the best ones in our videos.</p>
       </div>
 
       <div className="home-actions home-actions-stable">
