@@ -10,7 +10,12 @@ export default function Dashboard() {
   const [selectedIds, setSelectedIds] = useState(new Set());
   const [youtubeLink, setYoutubeLink] = useState('');
   const [linking, setLinking] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const selectFilter = (id) => {
+    setActiveFilter(id);
+    setSidebarOpen(false);
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -107,14 +112,21 @@ export default function Dashboard() {
         <title>Story Inbox – Leyu & Mahi</title>
       </Head>
       <div className="admin-dashboard">
-        <aside className="admin-sidebar">
+        {sidebarOpen && (
+          <div
+            className="admin-sidebar-overlay"
+            onClick={() => setSidebarOpen(false)}
+            onKeyDown={(e) => e.key === 'Escape' && setSidebarOpen(false)}
+          />
+        )}
+        <aside className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
           <h2 className="admin-logo">Story Inbox</h2>
           <nav className="admin-nav">
             {sidebarItems.map((item) => (
               <button
                 key={item.id}
                 className={`admin-nav-item ${activeFilter === item.id ? 'active' : ''}`}
-                onClick={() => setActiveFilter(item.id)}
+                onClick={() => selectFilter(item.id)}
               >
                 <span>{item.label}</span>
                 <span className="admin-count">({item.count})</span>
@@ -127,6 +139,14 @@ export default function Dashboard() {
         </aside>
 
         <main className="admin-main">
+          <button
+            type="button"
+            className="admin-menu-btn"
+            onClick={() => setSidebarOpen(true)}
+            aria-label="Menu"
+          >
+            ☰
+          </button>
           <header className="admin-header">
             <h1>Manage Stories</h1>
             <p className="admin-hint">
