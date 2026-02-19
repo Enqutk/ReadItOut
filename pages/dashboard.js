@@ -66,7 +66,7 @@ export default function Dashboard() {
     }
   }, [activeFilter]);
 
-  const counts = { pending: 0, approved: 0, rejected: 0 };
+  const counts = { pending: 0, rejected: 0 };
   stories.forEach((s) => {
     if (counts[s.status] !== undefined) counts[s.status]++;
   });

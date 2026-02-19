@@ -46,15 +46,13 @@ export default function MyStoriesPage() {
   }, []);
 
   const statusLabel = (s: Story) => {
-    if (s.status === 'featured' || s.youtube_link) return 'Featured';
-    if (s.status === 'approved') return 'Approved';
+    if (s.youtube_link) return 'Featured';
     if (s.status === 'rejected') return 'Rejected';
     return 'Pending';
   };
 
   const badgeClass = (s: Story) => {
     if (s.youtube_link) return 'badge badge-featured';
-    if (s.status === 'approved') return 'badge badge-approved';
     if (s.status === 'rejected') return 'badge badge-rejected';
     return 'badge badge-pending';
   };
