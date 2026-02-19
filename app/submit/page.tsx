@@ -21,6 +21,12 @@ export default function SubmitPage() {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, []);
+
+  useEffect(() => {
     const tg = window.Telegram?.WebApp;
     if (tg) {
       tg.ready();
