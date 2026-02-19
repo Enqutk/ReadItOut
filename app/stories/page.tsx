@@ -65,7 +65,7 @@ export default function MyStoriesPage() {
 
   return (
     <main className="page">
-      <Link href="/" className="link-back">← Back</Link>
+      <Link href="/" className="link-back link-back-floating" aria-label="Back">← Back</Link>
       <h1 className="page-title">My Stories</h1>
 
       {loading && (
