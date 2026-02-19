@@ -450,12 +450,12 @@ button, a, input, select, textarea {
 }
 .page-submit,
 .page-with-header {
-  padding-top: 56px;
+  padding-top: 88px;
 }
 @media (max-width: 768px) {
   .page-submit,
   .page-with-header {
-    padding-top: 60px;
+    padding-top: 96px;
   }
 }
 .page-header-row {
