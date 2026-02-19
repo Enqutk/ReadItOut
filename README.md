@@ -165,4 +165,4 @@ Only Instagram and TikTok; 5 links total: Instagram (Leyu), Instagram (Mahi), In
 ## Optional / future
 
 - **Sprint 5:** Direct messaging, ask fans questions.
-- **"Open" in chat list:** The blue **Open** button (like BotFather) is set in code when users send `/start` (Menu Button is not in BotFather’s UI). Ensure the bot is deployed and `NEXT_PUBLIC_APP_URL` is correct; after someone sends `/start`, the Open button should appear next to the chat in the list.
+- **"Open" in chat list:** The blue **Open** button (like BotFather) is set in code when users send `/start` (Menu Button is not in BotFather’s UI). After deploy: set `NEXT_PUBLIC_APP_URL`, then call once: `https://your-app.vercel.app/api/set-menu-button?secret=ADMIN_API_SECRET`, and restart Telegram so the blue Open appears in the chat list.
