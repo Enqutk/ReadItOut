@@ -283,6 +283,12 @@ export default function Dashboard() {
 
         <main className="admin-main">
           <header className="admin-header">
+            <div className="admin-header-content">
+            <h1>Manage Stories</h1>
+            <p className="admin-hint">
+              Stories are ordered by submission (#1 first). Select stories and add a video link to feature them.
+            </p>
+            </div>
             <button
               type="button"
               className="admin-menu-btn"
@@ -291,12 +297,6 @@ export default function Dashboard() {
             >
               ☰
             </button>
-            <div className="admin-header-content">
-            <h1>Manage Stories</h1>
-            <p className="admin-hint">
-              Stories are ordered by submission (#1 first). Select stories and add a video link to feature them.
-            </p>
-            </div>
           </header>
 
           {activeFilter !== 'settings' && (

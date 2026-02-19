@@ -792,8 +792,8 @@ button, a, input, select, textarea {
   }
   .admin-menu-btn {
     display: flex;
-    order: -1;
-    margin-right: 4px;
+    flex-shrink: 0;
+    margin-left: 12px;
   }
   .admin-main {
     width: 100%;
