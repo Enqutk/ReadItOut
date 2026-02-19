@@ -35,7 +35,7 @@ async function insertTestStory() {
 
   if (error) {
     console.error('Insert failed:', error.message);
-    console.error('Make sure you ran the migration: supabase/migrations/001_create_stories.sql');
+    console.error('Make sure you ran the migration: supabase/migrations/001_schema.sql');
     process.exit(1);
   }
 
