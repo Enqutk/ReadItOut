@@ -951,6 +951,22 @@ button, a, input, select, textarea {
   cursor: pointer;
 }
 .admin-settings-check input { width: 18px; height: 18px; }
+.admin-upload-row { margin-top: 8px; display: flex; align-items: center; gap: 8px; }
+.admin-file-input { position: absolute; width: 0; height: 0; opacity: 0; pointer-events: none; }
+.admin-upload-btn {
+  display: inline-block;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--accent);
+  background: rgba(79, 70, 229, 0.08);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.admin-upload-btn:hover { background: rgba(79, 70, 229, 0.12); }
+.admin-upload-btn.uploading { opacity: 0.8; cursor: wait; }
 
 .admin-list {
   display: flex;

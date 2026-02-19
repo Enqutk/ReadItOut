@@ -17,6 +17,7 @@ export default function Dashboard() {
   const [adminSecret, setAdminSecret] = useState('');
   const [config, setConfig] = useState({ socialLinks: {}, popup: null, profile: {} });
   const [configSaving, setConfigSaving] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState(null);
 
   const selectFilter = (id) => {
     setActiveFilter(id);
@@ -165,6 +166,46 @@ export default function Dashboard() {
     }
   };
 
+  const handlePhotoUpload = (field, file) => {
+    if (!file || !file.type.startsWith('image/')) {
+      alert('Please choose an image (JPEG, PNG, WebP, or GIF).');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Image must be under 5MB.');
+      return;
+    }
+    setUploadingPhoto(field);
+    const reader = new FileReader();
+    reader.onload = () => {
+      const headers = { 'Content-Type': 'application/json' };
+      if (initData) headers['X-Telegram-Init-Data'] = initData;
+      if (adminSecret.trim()) headers['X-Admin-Secret'] = adminSecret.trim();
+      const body = { image: reader.result, name: field };
+      if (initData) body.initData = initData;
+      if (adminSecret.trim()) body.adminSecret = adminSecret.trim();
+      fetch('/api/admin/upload-photo', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(body),
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          if (data.url) {
+            setConfig((c) => ({
+              ...c,
+              profile: { ...(c.profile || {}), [field === 'leyu' ? 'photoLeyu' : field === 'mahi' ? 'photoMahi' : 'photoTogether']: data.url },
+            }));
+          } else {
+            alert(data.error || 'Upload failed');
+          }
+        })
+        .catch(() => alert('Upload failed'))
+        .finally(() => setUploadingPhoto(null));
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSaveConfig = async () => {
     if (!initData && !adminSecret.trim()) {
       alert('Open from Telegram app, or enter Admin Secret below.');
@@ -311,52 +352,48 @@ export default function Dashboard() {
             <div className="admin-settings">
               <section className="admin-settings-section">
                 <h3 className="admin-settings-title">Profile (Leyu & Mahi)</h3>
-                <p className="admin-hint">Photos and copy shown on the mini app. Use image URLs (hosted anywhere).</p>
-                <div className="admin-settings-field">
-                  <label className="admin-settings-label">Photo Leyu (URL)</label>
-                  <input
-                    type="url"
-                    placeholder="https://..."
-                    value={config.profile?.photoLeyu || ''}
-                    onChange={(e) =>
-                      setConfig((c) => ({
-                        ...c,
-                        profile: { ...(c.profile || {}), photoLeyu: e.target.value },
-                      }))
-                    }
-                    className="admin-search"
-                  />
-                </div>
-                <div className="admin-settings-field">
-                  <label className="admin-settings-label">Photo Mahi (URL)</label>
-                  <input
-                    type="url"
-                    placeholder="https://..."
-                    value={config.profile?.photoMahi || ''}
-                    onChange={(e) =>
-                      setConfig((c) => ({
-                        ...c,
-                        profile: { ...(c.profile || {}), photoMahi: e.target.value },
-                      }))
-                    }
-                    className="admin-search"
-                  />
-                </div>
-                <div className="admin-settings-field">
-                  <label className="admin-settings-label">Photo together (optional)</label>
-                  <input
-                    type="url"
-                    placeholder="https://..."
-                    value={config.profile?.photoTogether || ''}
-                    onChange={(e) =>
-                      setConfig((c) => ({
-                        ...c,
-                        profile: { ...(c.profile || {}), photoTogether: e.target.value },
-                      }))
-                    }
-                    className="admin-search"
-                  />
-                </div>
+                <p className="admin-hint">Paste a URL or upload from your gallery. Save settings after changing.</p>
+                {['leyu', 'mahi', 'together'].map((field) => {
+                  const key = field === 'leyu' ? 'photoLeyu' : field === 'mahi' ? 'photoMahi' : 'photoTogether';
+                  const label = field === 'leyu' ? 'Photo Leyu' : field === 'mahi' ? 'Photo Mahi' : 'Photo together (optional)';
+                  return (
+                    <div key={field} className="admin-settings-field">
+                      <label className="admin-settings-label">{label}</label>
+                      <input
+                        type="url"
+                        placeholder="https://... or upload below"
+                        value={config.profile?.[key] || ''}
+                        onChange={(e) =>
+                          setConfig((c) => ({
+                            ...c,
+                            profile: { ...(c.profile || {}), [key]: e.target.value },
+                          }))
+                        }
+                        className="admin-search"
+                      />
+                      <div className="admin-upload-row">
+                        <input
+                          type="file"
+                          accept="image/jpeg,image/png,image/webp,image/gif"
+                          className="admin-file-input"
+                          id={`upload-${field}`}
+                          onChange={(e) => {
+                            const f = e.target.files?.[0];
+                            if (f) handlePhotoUpload(field, f);
+                            e.target.value = '';
+                          }}
+                          disabled={!!uploadingPhoto}
+                        />
+                        <label
+                          htmlFor={`upload-${field}`}
+                          className={`admin-upload-btn ${uploadingPhoto === field ? 'uploading' : ''}`}
+                        >
+                          {uploadingPhoto === field ? 'Uploading…' : '📷 Upload from gallery'}
+                        </label>
+                      </div>
+                    </div>
+                  );
+                })}
                 <div className="admin-settings-field">
                   <label className="admin-settings-label">Tagline (home page)</label>
                   <input

@@ -188,6 +188,8 @@ leyu_mahi_bot/
 
 **Popup (ads/events):** Set `NEXT_PUBLIC_POPUP_ENABLED=true`, `NEXT_PUBLIC_POPUP_TITLE`, etc. to show a promotional popup (once per session). Or use **Settings** in the admin dashboard to edit popup and social links in the app (stored in DB; run `supabase/migrations/004_app_config.sql` first).
 
+**Profile photos (upload from gallery):** In **Settings → Profile** you can paste image URLs or use **Upload from gallery** to pick a photo. For gallery upload to work, create a **public** storage bucket named `profile` in Supabase: Dashboard → Storage → New bucket → name `profile` → set to **Public**.
+
 **Setup:**
 1. Set `NEXT_PUBLIC_APP_URL` in Vercel env (e.g. `https://read-it-out-ten.vercel.app`)
 2. In [@BotFather](https://t.me/BotFather): `/mybots` → your bot → **Bot Settings** → **Menu Button** → set URL to your app URL (optional; the inline button also works)
