@@ -2,14 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-
-const SOCIAL_ICONS = {
-  youtube: '▶️',
-  instagram: '📷',
-  tiktok: '🎵',
-  twitter: '𝕏',
-  discord: '💬',
-};
+import { SOCIAL_LINK_KEYS, IconInstagram, IconTikTok, SOCIAL_LINK_SHORT_LABELS } from '../components/SocialIcons';
 
 const DEFAULT_ABOUT = `Leyu and Mahi — friends who turned late-night conversations into something bigger.
 
@@ -86,8 +79,10 @@ export default function AboutPage() {
                 rel="noopener noreferrer"
                 className="social-link"
               >
-                <span className="social-icon">{SOCIAL_ICONS[key as keyof typeof SOCIAL_ICONS] || '🔗'}</span>
-                <span className="social-label">{key}</span>
+                <span className="social-icon">
+                  {key.startsWith('instagram') ? <IconInstagram size={20} /> : <IconTikTok size={20} />}
+                </span>
+                <span className="social-label">{SOCIAL_LINK_SHORT_LABELS[key] || key}</span>
               </a>
             ))
           ) : (

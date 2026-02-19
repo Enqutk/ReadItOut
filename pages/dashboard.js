@@ -428,13 +428,19 @@ export default function Dashboard() {
               </section>
               <section className="admin-settings-section">
                 <h3 className="admin-settings-title">Social links</h3>
-                <p className="admin-hint">Shown on the mini app About page and home. Leave blank to hide.</p>
-                {['youtube', 'instagram', 'tiktok', 'twitter', 'discord'].map((key) => (
+                <p className="admin-hint">Instagram and TikTok only. Shown on home and About. Leave blank to hide.</p>
+                {[
+                  { key: 'instagram_leyu', label: 'Instagram (Leyu)', placeholder: 'https://instagram.com/...' },
+                  { key: 'instagram_mahi', label: 'Instagram (Mahi)', placeholder: 'https://instagram.com/...' },
+                  { key: 'instagram_both', label: 'Instagram (both)', placeholder: 'https://instagram.com/...' },
+                  { key: 'tiktok_leyu', label: 'TikTok (Leyu)', placeholder: 'https://tiktok.com/@...' },
+                  { key: 'tiktok_mahi', label: 'TikTok (Mahi)', placeholder: 'https://tiktok.com/@...' },
+                ].map(({ key, label, placeholder }) => (
                   <div key={key} className="admin-settings-field">
-                    <label className="admin-settings-label">{key}</label>
+                    <label className="admin-settings-label">{label}</label>
                     <input
                       type="url"
-                      placeholder={`https://${key}.com/...`}
+                      placeholder={placeholder}
                       value={config.socialLinks[key] || ''}
                       onChange={(e) =>
                         setConfig((c) => ({

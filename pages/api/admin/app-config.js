@@ -78,7 +78,7 @@ export default async function handler(req, res) {
     }
     if (bodySocial !== undefined) {
       const sanitized = {};
-      const keys = ['youtube', 'instagram', 'tiktok', 'twitter', 'discord'];
+      const keys = ['instagram_leyu', 'instagram_mahi', 'instagram_both', 'tiktok_leyu', 'tiktok_mahi'];
       for (const k of keys) {
         const v = bodySocial[k];
         if (typeof v === 'string' && v.trim()) sanitized[k] = v.trim();

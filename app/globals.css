@@ -296,6 +296,13 @@ button, a, input, select, textarea {
   border-color: #4f46e5;
   transform: translateY(-1px);
 }
+.home-social-icon {
+  color: #262626;
+  display: block;
+}
+.home-social-link:hover .home-social-icon {
+  color: #4f46e5;
+}
 
 .home-actions-stable { min-height: 200px; }
 .home-social-stable { min-height: 90px; }
@@ -492,7 +499,15 @@ button, a, input, select, textarea {
   background: #fafafa;
   border-color: #a8a8a8;
 }
-.social-icon { font-size: 18px; }
+.social-icon {
+  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+  color: #262626;
+}
+.social-icon svg {
+  flex-shrink: 0;
+}
 
 /* Success screen */
 .success-screen {
