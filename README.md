@@ -61,13 +61,7 @@ Copy `.env.example` to `.env.local` and set:
 ### 3. Set up Supabase
 
 1. Create a project at [supabase.com](https://supabase.com).
-2. In **SQL Editor**, run each migration in order:
-   - `supabase/migrations/001_create_stories.sql`
-   - `supabase/migrations/002_notifications_and_video.sql`
-   - `supabase/migrations/003_add_read_at.sql`
-   - `supabase/migrations/004_app_config.sql`
-   - `supabase/migrations/005_profile_config.sql`
-   - `supabase/migrations/006_submission_number.sql`
+2. In **SQL Editor**, run the schema once (fresh DB): `supabase/migrations/001_schema.sql`
 3. (Optional) Create a **public** Storage bucket named `profile` for profile photo uploads from the dashboard.
 
 ### 4. Run locally
@@ -119,7 +113,7 @@ leyu_mahi_bot/
 │           ├── feature-video.js
 │           └── upload-photo.js
 ├── supabase/
-│   └── migrations/         # 001–006 (stories, notifications, app_config, profile, submission_number)
+│   └── migrations/         # 001_schema.sql (full schema, run once on fresh DB)
 ├── .env.example
 ├── next.config.js
 └── package.json
