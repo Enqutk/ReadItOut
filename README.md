@@ -165,4 +165,4 @@ Only Instagram and TikTok; 5 links total: Instagram (Leyu), Instagram (Mahi), In
 ## Optional / future
 
 - **Sprint 5:** Direct messaging, ask fans questions.
-- **Menu button:** In BotFather → Bot Settings → Menu Button, set URL to `NEXT_PUBLIC_APP_URL` so users can open the app from the bot menu.
+- **"Open" in chat list:** The blue **Open** button (like BotFather) is set in code when users send `/start` (Menu Button is not in BotFather’s UI). Ensure the bot is deployed and `NEXT_PUBLIC_APP_URL` is correct; after someone sends `/start`, the Open button should appear next to the chat in the list.
