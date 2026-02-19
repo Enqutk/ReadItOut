@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { SOCIAL_LINK_KEYS, IconInstagram, IconTikTok, IconYouTube } from './components/SocialIcons';
+import { IconInstagram, IconTikTok, IconYouTube } from './components/SocialIcons';
 
 export default function Home() {
   const [ready, setReady] = useState(false);
@@ -36,7 +36,9 @@ export default function Home() {
       .finally(() => setReady(true));
   }, []);
 
-  const links = SOCIAL_LINK_KEYS.filter((key) => socialLinks[key]).map((key) => [key, socialLinks[key]] as const);
+  const leyLinks = (['instagram_leyu', 'tiktok_leyu'] as const).filter((k) => socialLinks[k]).map((k) => [k, socialLinks[k]] as const);
+  const mahLinks = (['instagram_mahi', 'tiktok_mahi'] as const).filter((k) => socialLinks[k]).map((k) => [k, socialLinks[k]] as const);
+  const sharedLinks = (['youtube', 'instagram_both'] as const).filter((k) => socialLinks[k]).map((k) => [k, socialLinks[k]] as const);
 
   const hasPhotos = !!(profile?.photoLeyu || profile?.photoMahi || profile?.photoTogether);
   const tagline = profile?.tagline || 'Two voices. One vibe. Your stories.';
@@ -59,6 +61,47 @@ export default function Home() {
         <h1 className="home-title">Leyu & Mahi</h1>
         <p className="home-tagline">{tagline}</p>
         <p className="home-desc">Share your story. We read the best ones in our videos.</p>
+
+        <div className="home-person-tags">
+          <div className="home-person-tag">
+            <div className="home-person-avatar-wrap">
+              {profile?.photoLeyu ? (
+                <img src={profile.photoLeyu} alt="Leyu" className="home-person-avatar" />
+              ) : (
+                <span className="home-person-avatar-placeholder">L</span>
+              )}
+            </div>
+            <span className="home-person-name">Leyu</span>
+            {(leyLinks.length > 0) && (
+              <div className="home-person-links">
+                {leyLinks.map(([key, url]) => (
+                  <a key={key} href={url} target="_blank" rel="noopener noreferrer" className="home-person-link" aria-label={key}>
+                    {key.startsWith('instagram') ? <IconInstagram size={16} className="home-person-icon" /> : <IconTikTok size={16} className="home-person-icon" />}
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+          <div className="home-person-tag">
+            <div className="home-person-avatar-wrap">
+              {profile?.photoMahi ? (
+                <img src={profile.photoMahi} alt="Mahi" className="home-person-avatar" />
+              ) : (
+                <span className="home-person-avatar-placeholder">M</span>
+              )}
+            </div>
+            <span className="home-person-name">Mahi</span>
+            {(mahLinks.length > 0) && (
+              <div className="home-person-links">
+                {mahLinks.map(([key, url]) => (
+                  <a key={key} href={url} target="_blank" rel="noopener noreferrer" className="home-person-link" aria-label={key}>
+                    {key.startsWith('instagram') ? <IconInstagram size={16} className="home-person-icon" /> : <IconTikTok size={16} className="home-person-icon" />}
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       <div className="home-actions home-actions-stable">
@@ -92,9 +135,9 @@ export default function Home() {
         )}
       </div>
 
-      {(!ready || links.length > 0) && (
+      {(!ready || sharedLinks.length > 0) && (
         <div className="home-social home-social-stable">
-          <p className="home-social-label">Follow us</p>
+          <p className="home-social-label">Leyu & Mahi</p>
           <div className="home-social-links">
             {!ready ? (
               <>
@@ -103,7 +146,7 @@ export default function Home() {
                 <div className="home-skeleton-icon" />
               </>
             ) : (
-              links.map(([key, url]) => (
+              sharedLinks.map(([key, url]) => (
                 <a key={key} href={url} target="_blank" rel="noopener noreferrer" className="home-social-link" aria-label={key}>
                   {key === 'youtube' ? <IconYouTube size={22} className="home-social-icon" /> : key.startsWith('instagram') ? <IconInstagram size={22} className="home-social-icon" /> : <IconTikTok size={22} className="home-social-icon" />}
                 </a>

@@ -12,12 +12,12 @@ export default function Dashboard() {
   const [linking, setLinking] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [rejectingId, setRejectingId] = useState(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(null);
   const [rejectReason, setRejectReason] = useState('');
   const [initData, setInitData] = useState('');
   const [adminSecret, setAdminSecret] = useState('');
   const [config, setConfig] = useState({ socialLinks: {}, popup: null, profile: {} });
   const [configSaving, setConfigSaving] = useState(false);
-  const [uploadingPhoto, setUploadingPhoto] = useState(null);
 
   const selectFilter = (id) => {
     setActiveFilter(id);
@@ -162,7 +162,7 @@ export default function Dashboard() {
     }
   };
 
-  const handlePhotoUpload = (field, file) => {
+  const handlePhotoUpload = (name, file) => {
     if (!file || !file.type.startsWith('image/')) {
       alert('Please choose an image (JPEG, PNG, WebP, or GIF).');
       return;
@@ -171,13 +171,13 @@ export default function Dashboard() {
       alert('Image must be under 5MB.');
       return;
     }
-    setUploadingPhoto(field);
+    setUploadingPhoto(name);
     const reader = new FileReader();
     reader.onload = () => {
       const headers = { 'Content-Type': 'application/json' };
       if (initData) headers['X-Telegram-Init-Data'] = initData;
       if (adminSecret.trim()) headers['X-Admin-Secret'] = adminSecret.trim();
-      const body = { image: reader.result, name: field };
+      const body = { image: reader.result, name };
       if (initData) body.initData = initData;
       if (adminSecret.trim()) body.adminSecret = adminSecret.trim();
       fetch('/api/admin/upload-photo', {
@@ -188,9 +188,10 @@ export default function Dashboard() {
         .then((r) => r.json())
         .then((data) => {
           if (data.url) {
+            const profileKey = name === 'together' ? 'photoTogether' : name === 'leyu' ? 'photoLeyu' : 'photoMahi';
             setConfig((c) => ({
               ...c,
-              profile: { ...(c.profile || {}), [field === 'leyu' ? 'photoLeyu' : field === 'mahi' ? 'photoMahi' : 'photoTogether']: data.url },
+              profile: { ...(c.profile || {}), [profileKey]: data.url },
             }));
           } else {
             alert(data.error || 'Upload failed');
@@ -349,49 +350,113 @@ export default function Dashboard() {
           {activeFilter === 'settings' && (
             <div className="admin-settings">
               <section className="admin-settings-section">
-                <h3 className="admin-settings-title">Profile (Leyu & Mahi)</h3>
-                <p className="admin-hint">Paste a URL or upload from your gallery. Save settings after changing.</p>
-                {['leyu', 'mahi', 'together'].map((field) => {
-                  const key = field === 'leyu' ? 'photoLeyu' : field === 'mahi' ? 'photoMahi' : 'photoTogether';
-                  const label = field === 'leyu' ? 'Photo Leyu' : field === 'mahi' ? 'Photo Mahi' : 'Photo together (optional)';
-                  return (
-                    <div key={field} className="admin-settings-field">
-                      <label className="admin-settings-label">{label}</label>
-                      <input
-                        type="url"
-                        placeholder="https://... or upload below"
-                        value={config.profile?.[key] || ''}
-                        onChange={(e) =>
-                          setConfig((c) => ({
-                            ...c,
-                            profile: { ...(c.profile || {}), [key]: e.target.value },
-                          }))
-                        }
-                        className="admin-search"
-                      />
-                      <div className="admin-upload-row">
-                        <input
-                          type="file"
-                          accept="image/jpeg,image/png,image/webp,image/gif"
-                          className="admin-file-input"
-                          id={`upload-${field}`}
-                          onChange={(e) => {
-                            const f = e.target.files?.[0];
-                            if (f) handlePhotoUpload(field, f);
-                            e.target.value = '';
-                          }}
-                          disabled={!!uploadingPhoto}
-                        />
-                        <label
-                          htmlFor={`upload-${field}`}
-                          className={`admin-upload-btn ${uploadingPhoto === field ? 'uploading' : ''}`}
-                        >
-                          {uploadingPhoto === field ? 'Uploading…' : '📷 Upload from gallery'}
-                        </label>
-                      </div>
-                    </div>
-                  );
-                })}
+                <h3 className="admin-settings-title">Profile photos</h3>
+                <p className="admin-hint">Paste URLs or upload. &quot;Together&quot; = main hero. Leyu/Mahi = small tags on home.</p>
+                <div className="admin-settings-field">
+                  <label className="admin-settings-label">Photo together (main)</label>
+                  <input
+                    type="url"
+                    placeholder="https://... or upload below"
+                    value={config.profile?.photoTogether || ''}
+                    onChange={(e) =>
+                      setConfig((c) => ({
+                        ...c,
+                        profile: { ...(c.profile || {}), photoTogether: e.target.value },
+                      }))
+                    }
+                    className="admin-search"
+                  />
+                  <div className="admin-upload-row">
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,image/gif"
+                      className="admin-file-input"
+                      id="upload-together"
+                      onChange={(e) => {
+                        const f = e.target.files?.[0];
+                        if (f) handlePhotoUpload('together', f);
+                        e.target.value = '';
+                      }}
+                      disabled={!!uploadingPhoto}
+                    />
+                    <label
+                      htmlFor="upload-together"
+                      className={`admin-upload-btn ${uploadingPhoto === 'together' ? 'uploading' : ''}`}
+                    >
+                      {uploadingPhoto === 'together' ? 'Uploading…' : '📷 Upload from gallery'}
+                    </label>
+                  </div>
+                </div>
+                <div className="admin-settings-field">
+                  <label className="admin-settings-label">Photo Leyu (small tag)</label>
+                  <input
+                    type="url"
+                    placeholder="https://..."
+                    value={config.profile?.photoLeyu || ''}
+                    onChange={(e) =>
+                      setConfig((c) => ({
+                        ...c,
+                        profile: { ...(c.profile || {}), photoLeyu: e.target.value },
+                      }))
+                    }
+                    className="admin-search"
+                  />
+                  <div className="admin-upload-row">
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,image/gif"
+                      className="admin-file-input"
+                      id="upload-leyu"
+                      onChange={(e) => {
+                        const f = e.target.files?.[0];
+                        if (f) handlePhotoUpload('leyu', f);
+                        e.target.value = '';
+                      }}
+                      disabled={!!uploadingPhoto}
+                    />
+                    <label
+                      htmlFor="upload-leyu"
+                      className={`admin-upload-btn ${uploadingPhoto === 'leyu' ? 'uploading' : ''}`}
+                    >
+                      {uploadingPhoto === 'leyu' ? 'Uploading…' : '📷 Upload'}
+                    </label>
+                  </div>
+                </div>
+                <div className="admin-settings-field">
+                  <label className="admin-settings-label">Photo Mahi (small tag)</label>
+                  <input
+                    type="url"
+                    placeholder="https://..."
+                    value={config.profile?.photoMahi || ''}
+                    onChange={(e) =>
+                      setConfig((c) => ({
+                        ...c,
+                        profile: { ...(c.profile || {}), photoMahi: e.target.value },
+                      }))
+                    }
+                    className="admin-search"
+                  />
+                  <div className="admin-upload-row">
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,image/gif"
+                      className="admin-file-input"
+                      id="upload-mahi"
+                      onChange={(e) => {
+                        const f = e.target.files?.[0];
+                        if (f) handlePhotoUpload('mahi', f);
+                        e.target.value = '';
+                      }}
+                      disabled={!!uploadingPhoto}
+                    />
+                    <label
+                      htmlFor="upload-mahi"
+                      className={`admin-upload-btn ${uploadingPhoto === 'mahi' ? 'uploading' : ''}`}
+                    >
+                      {uploadingPhoto === 'mahi' ? 'Uploading…' : '📷 Upload'}
+                    </label>
+                  </div>
+                </div>
                 <div className="admin-settings-field">
                   <label className="admin-settings-label">Tagline (home page)</label>
                   <input
@@ -427,30 +492,75 @@ export default function Dashboard() {
               <section className="admin-settings-section">
                 <h3 className="admin-settings-title">Social links</h3>
                 <p className="admin-hint">Shown on home and About. Leave blank to hide.</p>
-                {[
-                  { key: 'youtube', label: 'YouTube', placeholder: 'https://youtube.com/@...' },
-                  { key: 'instagram_leyu', label: 'Instagram (Leyu)', placeholder: 'https://instagram.com/...' },
-                  { key: 'instagram_mahi', label: 'Instagram (Mahi)', placeholder: 'https://instagram.com/...' },
-                  { key: 'instagram_both', label: 'Instagram (both)', placeholder: 'https://instagram.com/...' },
-                  { key: 'tiktok_leyu', label: 'TikTok (Leyu)', placeholder: 'https://tiktok.com/@...' },
-                  { key: 'tiktok_mahi', label: 'TikTok (Mahi)', placeholder: 'https://tiktok.com/@...' },
-                ].map(({ key, label, placeholder }) => (
-                  <div key={key} className="admin-settings-field">
-                    <label className="admin-settings-label">{label}</label>
-                    <input
-                      type="url"
-                      placeholder={placeholder}
-                      value={config.socialLinks[key] || ''}
-                      onChange={(e) =>
-                        setConfig((c) => ({
-                          ...c,
-                          socialLinks: { ...c.socialLinks, [key]: e.target.value },
-                        }))
-                      }
-                      className="admin-search"
-                    />
-                  </div>
-                ))}
+                <div className="admin-social-group">
+                  <h4 className="admin-social-group-title">Leyu&apos;s</h4>
+                  {[
+                    { key: 'instagram_leyu', label: 'Instagram', placeholder: 'https://instagram.com/...' },
+                    { key: 'tiktok_leyu', label: 'TikTok', placeholder: 'https://tiktok.com/@...' },
+                  ].map(({ key, label, placeholder }) => (
+                    <div key={key} className="admin-settings-field">
+                      <label className="admin-settings-label">{label}</label>
+                      <input
+                        type="url"
+                        placeholder={placeholder}
+                        value={config.socialLinks[key] || ''}
+                        onChange={(e) =>
+                          setConfig((c) => ({
+                            ...c,
+                            socialLinks: { ...c.socialLinks, [key]: e.target.value },
+                          }))
+                        }
+                        className="admin-search"
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div className="admin-social-group">
+                  <h4 className="admin-social-group-title">Mahi&apos;s</h4>
+                  {[
+                    { key: 'instagram_mahi', label: 'Instagram', placeholder: 'https://instagram.com/...' },
+                    { key: 'tiktok_mahi', label: 'TikTok', placeholder: 'https://tiktok.com/@...' },
+                  ].map(({ key, label, placeholder }) => (
+                    <div key={key} className="admin-settings-field">
+                      <label className="admin-settings-label">{label}</label>
+                      <input
+                        type="url"
+                        placeholder={placeholder}
+                        value={config.socialLinks[key] || ''}
+                        onChange={(e) =>
+                          setConfig((c) => ({
+                            ...c,
+                            socialLinks: { ...c.socialLinks, [key]: e.target.value },
+                          }))
+                        }
+                        className="admin-search"
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div className="admin-social-group">
+                  <h4 className="admin-social-group-title">Leyu & Mahi&apos;s</h4>
+                  {[
+                    { key: 'youtube', label: 'YouTube', placeholder: 'https://youtube.com/@...' },
+                    { key: 'instagram_both', label: 'Instagram', placeholder: 'https://instagram.com/...' },
+                  ].map(({ key, label, placeholder }) => (
+                    <div key={key} className="admin-settings-field">
+                      <label className="admin-settings-label">{label}</label>
+                      <input
+                        type="url"
+                        placeholder={placeholder}
+                        value={config.socialLinks[key] || ''}
+                        onChange={(e) =>
+                          setConfig((c) => ({
+                            ...c,
+                            socialLinks: { ...c.socialLinks, [key]: e.target.value },
+                          }))
+                        }
+                        className="admin-search"
+                      />
+                    </div>
+                  ))}
+                </div>
               </section>
               <section className="admin-settings-section">
                 <h3 className="admin-settings-title">Popup (ad / event)</h3>
