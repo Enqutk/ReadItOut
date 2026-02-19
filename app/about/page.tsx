@@ -46,10 +46,8 @@ export default function AboutPage() {
   const aboutText = (profile.aboutBlurb || DEFAULT_ABOUT).trim();
 
   return (
-    <main className="page page-with-header">
-      <div className="page-header-row">
-        <Link href="/" className="link-back">← Back</Link>
-      </div>
+    <main className="page">
+      <Link href="/" className="link-back link-back-floating" aria-label="Back">← Back</Link>
       <h1 className="page-title">About Leyu & Mahi</h1>
 
       {hasPhotos && (
