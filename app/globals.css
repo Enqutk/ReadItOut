@@ -5,36 +5,37 @@
 }
 
 :root {
-  --bg: #f8fafc;
+  --bg: #fafafa;
   --bg-card: #ffffff;
-  --bg-card-hover: #f1f5f9;
+  --bg-card-hover: #fafafa;
   --accent: #4f46e5;
   --accent-light: #6366f1;
-  --accent-pink: #818cf8;
-  --text: #1e293b;
-  --text-muted: #64748b;
-  --border: #e2e8f0;
+  --accent-pink: #c084fc;
+  --text: #262626;
+  --text-muted: #8e8e8e;
+  --border: #dbdbdb;
   --success: #059669;
   --error: #dc2626;
-  --gradient-main: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
-  --gradient-subtle: linear-gradient(180deg, rgba(79, 70, 229, 0.06) 0%, transparent 50%);
-  --shadow-glow: 0 4px 24px rgba(79, 70, 229, 0.12);
-  --radius: 16px;
-  --radius-sm: 12px;
+  --gradient-main: linear-gradient(90deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+  --gradient-ring: linear-gradient(45deg, #f093fb, #f5576c, #4facfe, #00f2fe);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-card: 0 0 0 1px rgba(0, 0, 0, 0.03);
 }
 
 html, body {
   margin: 0;
   padding: 0;
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #f1f5f9;
-  color: #1e293b;
+  background: #fafafa;
+  color: #262626;
   min-height: 100vh;
 }
 
 body {
-  background: #f1f5f9 !important;
-  color: #1e293b !important;
+  background: #fafafa !important;
+  color: #262626 !important;
 }
 
 /* Admin dashboard: use same dark theme as user app (no override) */
@@ -49,22 +50,21 @@ button, a, input, select, textarea {
   justify-content: center;
   gap: 8px;
   width: 100%;
-  padding: 18px 24px;
+  padding: 14px 24px;
   background: var(--gradient-main);
   color: white !important;
   border: none;
   border-radius: var(--radius);
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 600;
   text-decoration: none !important;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
+  transition: opacity 0.2s;
+  box-shadow: var(--shadow-soft);
 }
 
 .btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(79, 70, 229, 0.3);
+  opacity: 0.92;
 }
 
 .btn-primary:active {
@@ -77,54 +77,50 @@ button, a, input, select, textarea {
   justify-content: center;
   gap: 8px;
   width: 100%;
-  padding: 18px 24px;
+  padding: 14px 24px;
   background: #ffffff;
-  color: #1e293b !important;
-  border: 2px solid #4f46e5;
+  color: #262626 !important;
+  border: 1px solid #dbdbdb;
   border-radius: var(--radius);
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 600;
   text-decoration: none !important;
   cursor: pointer;
-  transition: all 0.2s;
-  backdrop-filter: blur(10px);
+  transition: background 0.2s, border-color 0.2s;
 }
 
 .btn-secondary:hover {
-  background: rgba(79, 70, 229, 0.06);
-  border-color: var(--accent-light);
+  background: #fafafa;
+  border-color: #a8a8a8;
 }
 
 .card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  background: #ffffff;
+  border: 1px solid #dbdbdb;
   border-radius: var(--radius);
   padding: 20px;
-  transition: all 0.2s;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.2s;
+  box-shadow: var(--shadow-card);
 }
 
 .card:hover {
-  background: var(--bg-card-hover);
-  border-color: rgba(79, 70, 229, 0.2);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border-color: #c7c7c7;
 }
 
 .link-back {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: var(--accent-light) !important;
+  color: #0095f6 !important;
   text-decoration: none !important;
   font-size: 15px;
   font-weight: 500;
   margin-bottom: 28px;
-  transition: gap 0.2s, color 0.2s;
+  transition: opacity 0.2s;
 }
 
 .link-back:hover {
-  gap: 10px;
-  color: var(--accent) !important;
+  opacity: 0.7;
 }
 
 .input-field, .input-select {
@@ -140,8 +136,8 @@ button, a, input, select, textarea {
 
 .input-field:focus, .input-select:focus {
   outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+  border-color: #a8a8a8;
+  box-shadow: 0 0 0 1px #dbdbdb;
 }
 
 .input-select {
@@ -175,7 +171,7 @@ button, a, input, select, textarea {
 .badge-rejected { background: rgba(239, 68, 68, 0.2); color: var(--error); }
 .badge-featured { background: linear-gradient(135deg, rgba(79, 70, 229, 0.15), rgba(99, 102, 241, 0.2)); color: #4f46e5; }
 
-/* Home */
+/* Home – Instagram vibe, our concept */
 .home {
   min-height: 100vh;
   display: flex;
@@ -183,23 +179,23 @@ button, a, input, select, textarea {
   align-items: center;
   justify-content: flex-start;
   padding: 24px 20px 32px;
-  gap: 28px;
+  gap: 24px;
 }
 .home-hero-card {
   width: 100%;
   max-width: 400px;
   background: #ffffff;
-  border-radius: 20px;
-  padding: 32px 24px;
+  border-radius: 12px;
+  padding: 28px 24px;
   text-align: center;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e2e8f0;
+  box-shadow: var(--shadow-card);
+  border: 1px solid #dbdbdb;
 }
 .home-avatars {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 16px;
   margin-bottom: 20px;
   min-height: 72px;
 }
@@ -208,12 +204,14 @@ button, a, input, select, textarea {
   height: 64px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #e2e8f0;
+  border: 2px solid #dbdbdb;
 }
 .home-avatar-together {
   width: 88px;
   height: 88px;
-  border-radius: 16px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #dbdbdb;
 }
 .home-icon {
   font-size: 48px;
@@ -221,23 +219,26 @@ button, a, input, select, textarea {
   line-height: 1;
 }
 .home-title {
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 700;
-  margin: 0 0 8px;
-  color: #1e293b;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
+  margin: 0 0 6px;
+  color: #262626;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
 }
 .home-tagline {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
-  color: #4f46e5;
-  margin: 0 0 12px;
+  background: var(--gradient-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0 0 10px;
   line-height: 1.4;
 }
 .home-desc {
   font-size: 14px;
-  color: #64748b;
+  color: #8e8e8e;
   margin: 0;
   line-height: 1.5;
   max-width: 280px;
@@ -267,7 +268,7 @@ button, a, input, select, textarea {
 .home-social-label {
   font-size: 13px;
   font-weight: 500;
-  color: #64748b;
+  color: #8e8e8e;
   margin: 0 0 12px;
 }
 .home-social-links {
@@ -323,14 +324,19 @@ button, a, input, select, textarea {
   gap: 8px;
   width: 100%;
   padding: 14px 24px;
-  background: rgba(79, 70, 229, 0.08);
-  color: #4f46e5 !important;
-  border: 2px solid #4f46e5;
+  background: #fafafa;
+  color: #262626 !important;
+  border: 1px solid #dbdbdb;
   border-radius: var(--radius);
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   text-decoration: none !important;
+  transition: background 0.2s, border-color 0.2s;
+}
+.btn-admin:hover {
+  background: #efefef;
+  border-color: #a8a8a8;
 }
 
 /* Page layout */
@@ -354,8 +360,8 @@ button, a, input, select, textarea {
 .popup-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(30, 41, 59, 0.4);
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(2px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -363,14 +369,14 @@ button, a, input, select, textarea {
   padding: 20px;
 }
 .popup-box {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  background: #ffffff;
+  border: 1px solid #dbdbdb;
   border-radius: var(--radius);
   padding: 28px;
   max-width: 360px;
   width: 100%;
   position: relative;
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
 }
 .popup-close {
   position: absolute;
@@ -386,22 +392,22 @@ button, a, input, select, textarea {
   border-radius: 8px;
   line-height: 1;
 }
-.popup-close:hover { color: var(--text); background: rgba(0,0,0,0.04); }
+.popup-close:hover { color: #262626; background: #fafafa; }
 .popup-title {
   font-size: 20px;
   font-weight: 700;
   margin: 0 0 12px;
-  color: var(--text);
+  color: #262626;
 }
 .popup-message {
   font-size: 15px;
-  color: var(--text-muted);
+  color: #8e8e8e;
   line-height: 1.6;
   margin: 0 0 16px;
 }
 .popup-link {
   display: inline-block;
-  color: var(--accent-light) !important;
+  color: #0095f6 !important;
   font-weight: 600;
   margin-bottom: 16px;
   text-decoration: none !important;
@@ -429,7 +435,7 @@ button, a, input, select, textarea {
   background: rgba(79, 70, 229, 0.08);
   animation: skeleton-pulse 1.5s ease-in-out infinite;
 }
-.social-links-empty { font-size: 14px; color: var(--text-muted); margin: 0; }
+.social-links-empty { font-size: 14px; color: #8e8e8e; margin: 0; }
 .about-avatars {
   display: flex;
   align-items: center;
@@ -442,25 +448,26 @@ button, a, input, select, textarea {
   height: 80px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid rgba(79, 70, 229, 0.35);
-  box-shadow: 0 4px 20px rgba(79, 70, 229, 0.15);
+  border: 2px solid #dbdbdb;
 }
 .about-avatar-together {
   width: 160px;
   height: 160px;
-  border-radius: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #dbdbdb;
 }
 .about-text {
   margin: 0;
   line-height: 1.75;
-  color: var(--text-muted);
+  color: #8e8e8e;
   white-space: pre-line;
 }
 .social-links-title {
   font-size: 16px;
   font-weight: 600;
   margin: 0 0 16px;
-  color: var(--text);
+  color: #262626;
 }
 .social-links {
   display: flex;
@@ -472,18 +479,18 @@ button, a, input, select, textarea {
   align-items: center;
   gap: 8px;
   padding: 12px 18px;
-  background: rgba(79, 70, 229, 0.08);
-  border: 1px solid var(--border);
+  background: #ffffff;
+  border: 1px solid #dbdbdb;
   border-radius: var(--radius-sm);
-  color: var(--accent-light) !important;
+  color: #262626 !important;
   text-decoration: none !important;
   font-weight: 500;
   font-size: 14px;
-  transition: all 0.2s;
+  transition: background 0.2s, border-color 0.2s;
 }
 .social-link:hover {
-  background: rgba(79, 70, 229, 0.15);
-  border-color: var(--accent);
+  background: #fafafa;
+  border-color: #a8a8a8;
 }
 .social-icon { font-size: 18px; }
 
