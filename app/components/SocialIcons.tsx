@@ -36,14 +36,32 @@ export function IconTikTok({ className = '', size = 24 }: { className?: string; 
   );
 }
 
+/** Professional YouTube-style icon (play button) */
+export function IconYouTube({ className = '', size = 24 }: { className?: string; size?: number }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      className={className}
+      fill="currentColor"
+      aria-hidden
+    >
+      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+    </svg>
+  );
+}
+
 /** Keys that use Instagram icon */
 export const INSTAGRAM_KEYS = ['instagram_leyu', 'instagram_mahi', 'instagram_both'] as const;
 /** Keys that use TikTok icon */
 export const TIKTOK_KEYS = ['tiktok_leyu', 'tiktok_mahi'] as const;
 /** All social link keys in display order */
-export const SOCIAL_LINK_KEYS = [...INSTAGRAM_KEYS, ...TIKTOK_KEYS] as const;
+export const SOCIAL_LINK_KEYS = ['youtube', ...INSTAGRAM_KEYS, ...TIKTOK_KEYS] as const;
 /** Human labels for Settings */
 export const SOCIAL_LINK_LABELS: Record<string, string> = {
+  youtube: 'YouTube',
   instagram_leyu: 'Instagram (Leyu)',
   instagram_mahi: 'Instagram (Mahi)',
   instagram_both: 'Instagram (both)',
@@ -53,6 +71,7 @@ export const SOCIAL_LINK_LABELS: Record<string, string> = {
 
 /** Short labels for About page */
 export const SOCIAL_LINK_SHORT_LABELS: Record<string, string> = {
+  youtube: 'YouTube',
   instagram_leyu: 'Leyu',
   instagram_mahi: 'Mahi',
   instagram_both: 'Both',

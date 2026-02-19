@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { SOCIAL_LINK_KEYS, IconInstagram, IconTikTok } from './components/SocialIcons';
+import { SOCIAL_LINK_KEYS, IconInstagram, IconTikTok, IconYouTube } from './components/SocialIcons';
 
 export default function Home() {
   const [ready, setReady] = useState(false);
@@ -105,7 +105,7 @@ export default function Home() {
             ) : (
               links.map(([key, url]) => (
                 <a key={key} href={url} target="_blank" rel="noopener noreferrer" className="home-social-link" aria-label={key}>
-                  {key.startsWith('instagram') ? <IconInstagram size={22} className="home-social-icon" /> : <IconTikTok size={22} className="home-social-icon" />}
+                  {key === 'youtube' ? <IconYouTube size={22} className="home-social-icon" /> : key.startsWith('instagram') ? <IconInstagram size={22} className="home-social-icon" /> : <IconTikTok size={22} className="home-social-icon" />}
                 </a>
               ))
             )}

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { SOCIAL_LINK_KEYS, IconInstagram, IconTikTok, SOCIAL_LINK_SHORT_LABELS } from '../components/SocialIcons';
+import { SOCIAL_LINK_KEYS, IconInstagram, IconTikTok, IconYouTube, SOCIAL_LINK_SHORT_LABELS } from '../components/SocialIcons';
 
 const DEFAULT_ABOUT = `Leyu and Mahi — friends who turned late-night conversations into something bigger.
 
@@ -80,7 +80,7 @@ export default function AboutPage() {
                 className="social-link"
               >
                 <span className="social-icon">
-                  {key.startsWith('instagram') ? <IconInstagram size={20} /> : <IconTikTok size={20} />}
+                  {key === 'youtube' ? <IconYouTube size={20} /> : key.startsWith('instagram') ? <IconInstagram size={20} /> : <IconTikTok size={20} />}
                 </span>
                 <span className="social-label">{SOCIAL_LINK_SHORT_LABELS[key] || key}</span>
               </a>

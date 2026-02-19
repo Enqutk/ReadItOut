@@ -424,8 +424,9 @@ export default function Dashboard() {
               </section>
               <section className="admin-settings-section">
                 <h3 className="admin-settings-title">Social links</h3>
-                <p className="admin-hint">Instagram and TikTok only. Shown on home and About. Leave blank to hide.</p>
+                <p className="admin-hint">Shown on home and About. Leave blank to hide.</p>
                 {[
+                  { key: 'youtube', label: 'YouTube', placeholder: 'https://youtube.com/@...' },
                   { key: 'instagram_leyu', label: 'Instagram (Leyu)', placeholder: 'https://instagram.com/...' },
                   { key: 'instagram_mahi', label: 'Instagram (Mahi)', placeholder: 'https://instagram.com/...' },
                   { key: 'instagram_both', label: 'Instagram (both)', placeholder: 'https://instagram.com/...' },
