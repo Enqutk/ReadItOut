@@ -448,11 +448,13 @@ button, a, input, select, textarea {
   max-width: 480px;
   margin: 0 auto;
 }
-.page-submit {
+.page-submit,
+.page-with-header {
   padding-top: 56px;
 }
 @media (max-width: 768px) {
-  .page-submit {
+  .page-submit,
+  .page-with-header {
     padding-top: 60px;
   }
 }
