@@ -76,8 +76,10 @@ export default function SubmitPage() {
   }
 
   return (
-    <main className="page">
-      <Link href="/" className="link-back">← Back</Link>
+    <main className="page page-submit">
+      <div className="page-header-row">
+        <Link href="/" className="link-back">← Back</Link>
+      </div>
       <h1 className="page-title">Submit Your Story!</h1>
 
       <form onSubmit={handleSubmit}>

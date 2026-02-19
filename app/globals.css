@@ -132,7 +132,7 @@ button, a, input, select, textarea {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  color: var(--tg-theme-text-color, var(--text));
+  color: #262626;
   font-size: 16px;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
@@ -447,6 +447,20 @@ button, a, input, select, textarea {
   padding: 24px;
   max-width: 480px;
   margin: 0 auto;
+}
+.page-submit {
+  padding-top: 56px;
+}
+@media (max-width: 768px) {
+  .page-submit {
+    padding-top: 60px;
+  }
+}
+.page-header-row {
+  margin-bottom: 12px;
+}
+.page-header-row .link-back {
+  margin-bottom: 0;
 }
 .page-title {
   font-size: 26px;
