@@ -74,7 +74,7 @@ export default function SubmitPage() {
         <h2 className="success-title">Story sent successfully!</h2>
         <p className="success-id">Your submission {trackId} — save this to track it.</p>
         <p className="success-text">We&apos;ll notify you if it&apos;s featured in a video.</p>
-        <Link href="/" className="link-back" style={{ marginTop: 32 }}>
+        <Link href="/" className="link-back link-back-floating" aria-label="Back to Home">
           ← Back to Home
         </Link>
       </main>
@@ -82,10 +82,8 @@ export default function SubmitPage() {
   }
 
   return (
-    <main className="page page-submit">
-      <div className="page-header-row">
-        <Link href="/" className="link-back">← Back</Link>
-      </div>
+    <main className="page">
+      <Link href="/" className="link-back link-back-floating" aria-label="Back">← Back</Link>
       <h1 className="page-title">Submit Your Story!</h1>
 
       <form onSubmit={handleSubmit}>
