@@ -282,19 +282,21 @@ export default function Dashboard() {
         </aside>
 
         <main className="admin-main">
-          <button
-            type="button"
-            className="admin-menu-btn"
-            onClick={() => setSidebarOpen(true)}
-            aria-label="Menu"
-          >
-            ☰
-          </button>
           <header className="admin-header">
+            <button
+              type="button"
+              className="admin-menu-btn"
+              onClick={() => setSidebarOpen(true)}
+              aria-label="Open menu"
+            >
+              ☰
+            </button>
+            <div className="admin-header-content">
             <h1>Manage Stories</h1>
             <p className="admin-hint">
               Stories are ordered by submission (#1 first). Select stories and add a video link to feature them.
             </p>
+            </div>
           </header>
 
           {activeFilter !== 'settings' && (
