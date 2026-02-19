@@ -39,14 +39,14 @@ export default async function handler(req, res) {
         category: category || null,
         status: 'pending',
       })
-      .select('id')
+      .select('id, submission_number')
       .single();
 
     if (error) {
       return res.status(500).json({ error: error.message });
     }
 
-    return res.status(200).json({ id: data.id });
+    return res.status(200).json({ id: data.id, submission_number: data.submission_number });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }

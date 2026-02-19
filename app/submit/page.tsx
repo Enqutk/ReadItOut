@@ -17,7 +17,7 @@ export default function SubmitPage() {
   const [story, setStory] = useState('');
   const [anonymous, setAnonymous] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [done, setDone] = useState<{ id: string } | null>(null);
+  const [done, setDone] = useState<{ id: string; submission_number?: number } | null>(null);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -52,7 +52,7 @@ export default function SubmitPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to submit');
-      setDone({ id: data.id });
+      setDone({ id: data.id, submission_number: data.submission_number });
     } catch (err: any) {
       setError(err.message || 'Something went wrong. Try again.');
     } finally {
@@ -61,12 +61,12 @@ export default function SubmitPage() {
   };
 
   if (done) {
-    const shortId = done.id.slice(0, 8);
+    const trackId = done.submission_number != null ? `#${done.submission_number}` : `#${done.id.slice(0, 8)}`;
     return (
       <main className="success-screen">
         <div className="success-icon">🎉</div>
         <h2 className="success-title">Story sent successfully!</h2>
-        <p className="success-id">Your story ID: #{shortId}</p>
+        <p className="success-id">Your submission {trackId} — save this to track it.</p>
         <p className="success-text">We&apos;ll notify you if it&apos;s featured in a video.</p>
         <Link href="/" className="link-back" style={{ marginTop: 32 }}>
           ← Back to Home

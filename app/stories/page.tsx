@@ -5,6 +5,7 @@ import Link from 'next/link';
 
 type Story = {
   id: string;
+  submission_number?: number | null;
   content: string;
   category: string | null;
   status: string;
@@ -89,7 +90,7 @@ export default function MyStoriesPage() {
           {stories.map((s) => (
             <div key={s.id} className="story-card">
               <div className="story-header">
-                <span className="story-id">Story #{s.id.slice(0, 8)}</span>
+                <span className="story-id">Submission {s.submission_number != null ? `#${s.submission_number}` : `#${s.id.slice(0, 8)}`}</span>
                 <span className={badgeClass(s)}>{statusLabel(s)}</span>
               </div>
               <p className="story-content">

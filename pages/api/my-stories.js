@@ -20,7 +20,7 @@ export default async function handler(req, res) {
   try {
     const { data, error } = await supabase
       .from('stories')
-      .select('id, content, category, status, youtube_link, created_at')
+      .select('id, submission_number, content, category, status, youtube_link, created_at')
       .eq('telegram_user_id', user.id)
       .order('created_at', { ascending: false })
       .limit(50);

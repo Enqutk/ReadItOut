@@ -13,7 +13,7 @@ export default async function handler(req, res) {
   try {
     const { data, error } = await supabase
       .from('stories')
-      .select('id, telegram_user_id, telegram_username, content, category, status, rejection_reason, youtube_link, read_at, created_at')
+      .select('id, submission_number, telegram_user_id, telegram_username, content, category, status, rejection_reason, youtube_link, read_at, created_at')
       .order('created_at', { ascending: true })
       .limit(200);
 
@@ -21,7 +21,7 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: error.message });
     }
 
-    const stories = (data || []).map((s, i) => ({ ...s, story_number: i + 1 }));
+    const stories = data || [];
     return res.status(200).json({ stories });
   } catch (err) {
     return res.status(500).json({ error: err.message });

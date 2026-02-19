@@ -77,7 +77,6 @@ export default function Dashboard() {
   const sidebarItems = [
     { id: 'all', label: 'All Stories', count: stories.length },
     { id: 'pending', label: 'New', count: newCount },
-    { id: 'approved', label: 'Shortlisted', count: counts.approved },
     { id: 'rejected', label: 'Rejected', count: counts.rejected },
     { id: 'featured', label: 'Already read (contact)', count: featuredCount },
     { id: 'settings', label: 'Settings', count: '' },
@@ -96,7 +95,6 @@ export default function Dashboard() {
   };
 
   const newStories = bySearch(byCategory(stories.filter((s) => s.status === 'pending' && !s.read_at)));
-  const shortlisted = bySearch(byCategory(stories.filter((s) => s.status === 'approved')));
   const featured = bySearch(byCategory(stories.filter((s) => s.youtube_link)));
 
   const toggleSelect = (id) => {
@@ -137,15 +135,13 @@ export default function Dashboard() {
   const filteredStories =
     activeFilter === 'pending'
       ? newStories
-      : activeFilter === 'approved'
-      ? shortlisted
       : activeFilter === 'rejected'
       ? rejectedStories
       : activeFilter === 'featured'
       ? featured
       : bySearch(byCategory(stories));
 
-  const canSelect = ['pending', 'approved', 'all'].includes(activeFilter);
+  const canSelect = ['pending', 'all'].includes(activeFilter);
 
   const handleReject = async () => {
     if (!rejectingId) return;
@@ -614,20 +610,6 @@ export default function Dashboard() {
                 ))}
                 {newStories.length === 0 && <div className="admin-empty">No new stories</div>}
               </div>
-              <div className="admin-column">
-                <h3>Shortlisted</h3>
-                {shortlisted.map((s) => (
-                  <StoryCard
-                    key={s.id}
-                    story={s}
-                    selectable={canSelect}
-                    selected={selectedIds.has(s.id)}
-                    onToggle={() => toggleSelect(s.id)}
-                    showReject={false}
-                  />
-                ))}
-                {shortlisted.length === 0 && <div className="admin-empty">None yet</div>}
-              </div>
             </div>
           ) : (
             <div className="admin-list">
@@ -677,7 +659,7 @@ function StoryCard({ story, selectable, selected, onToggle, onReject, showReject
           {story.content.length > 150 ? story.content.slice(0, 150) + '…' : story.content}
         </p>
         <div className="story-meta">
-          <span className="story-num">#{num != null ? num : story.id.slice(0, 8)}</span>
+          <span className="story-num">#{num != null ? num : (story.id && story.id.slice(0, 8))}</span>
           <span>@{story.telegram_username || story.telegram_user_id}</span>
         </div>
         <div className="story-card-actions">
