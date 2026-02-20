@@ -82,58 +82,62 @@ export default function SubmitPage() {
   }
 
   return (
-    <main className="page">
+    <main className="page-submit-wrap">
       <Link href="/" className="link-back link-back-floating" aria-label="Back">← Back</Link>
-      <h1 className="page-title">Submit Your Story!</h1>
+      <h1 className="page-title">Submit Your Story</h1>
+      <p className="page-subtitle">Share something with Leyu & Mahi. Min 20 characters.</p>
 
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label className="form-label">How does it feel?</label>
-          <div className="emoji-picker">
-            {CATEGORIES.map((c) => (
-              <button
-                key={c.value}
-                type="button"
-                className={`emoji-btn ${category === c.value ? 'emoji-btn-active' : ''}`}
-                onClick={() => setCategory(c.value)}
-                title={c.value}
-              >
-                {c.emoji}
-              </button>
-            ))}
+        <div className="submit-form-card">
+          <div className="form-group">
+            <label className="form-label">How does it feel?</label>
+            <div className="emoji-picker">
+              {CATEGORIES.map((c) => (
+                <button
+                  key={c.value}
+                  type="button"
+                  className={`emoji-btn ${category === c.value ? 'emoji-btn-active' : ''}`}
+                  onClick={() => setCategory(c.value)}
+                  title={c.value}
+                  aria-pressed={category === c.value}
+                >
+                  {c.emoji}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Your story</label>
+            <textarea
+              value={story}
+              onChange={(e) => setStory(e.target.value)}
+              placeholder="Type your story here..."
+              rows={6}
+              minLength={20}
+              maxLength={4096}
+              className="input-field"
+              aria-invalid={!!error}
+            />
+            <span className="submit-char-count" aria-live="polite">{story.length}/4096</span>
           </div>
         </div>
 
-        <div className="form-group">
-          <label className="form-label">Your Story</label>
-          <textarea
-            value={story}
-            onChange={(e) => setStory(e.target.value)}
-            placeholder="Type your story here..."
-            rows={8}
-            minLength={20}
-            maxLength={4096}
-            className="input-field"
-            style={{ resize: 'vertical', minHeight: 180 }}
-          />
-          <span className="text-muted" style={{ fontSize: 12 }}>{story.length}/4096</span>
+        <div className="submit-checkbox-wrap">
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={anonymous}
+              onChange={(e) => setAnonymous(e.target.checked)}
+            />
+            <span>Submit anonymously</span>
+          </label>
         </div>
 
-        <label className="checkbox-label" style={{ marginBottom: 28 }}>
-          <input
-            type="checkbox"
-            checked={anonymous}
-            onChange={(e) => setAnonymous(e.target.checked)}
-          />
-          <span>Submit anonymously</span>
-        </label>
+        {error && <p className="submit-error" role="alert">{error}</p>}
 
-        {error && (
-          <p style={{ color: 'var(--error)', marginBottom: 20, fontSize: 14 }}>{error}</p>
-        )}
-
-        <button type="submit" disabled={loading} className="btn-primary btn-send">
-          {loading ? 'Sending...' : 'Send to Leyu & Mahi'}
+        <button type="submit" disabled={loading} className="btn-primary submit-cta">
+          {loading ? 'Sending…' : 'Send to Leyu & Mahi'}
         </button>
       </form>
     </main>
