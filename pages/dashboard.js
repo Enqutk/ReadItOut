@@ -86,12 +86,17 @@ export default function Dashboard() {
     !categoryFilter ? list : list.filter((s) => s.category === categoryFilter);
   const bySearch = (list) => {
     if (!searchFilter.trim()) return list;
-    const q = searchFilter.trim().toLowerCase();
-    return list.filter(
-      (s) =>
-        (s.content && s.content.toLowerCase().includes(q)) ||
-        (s.telegram_username && s.telegram_username.toLowerCase().includes(q))
-    );
+    const raw = searchFilter.trim();
+    const q = raw.toLowerCase().replace(/^#/, '');
+    const numSearch = q !== '' && /^\d+$/.test(q) ? parseInt(q, 10) : null;
+    return list.filter((s) => {
+      if (s.content && s.content.toLowerCase().includes(q)) return true;
+      if (s.telegram_username && s.telegram_username.toLowerCase().includes(q)) return true;
+      if (numSearch != null && s.submission_number != null && s.submission_number === numSearch) return true;
+      if (numSearch != null && s.submission_number != null && String(s.submission_number).includes(q)) return true;
+      if (s.id && s.id.toLowerCase().includes(q)) return true;
+      return false;
+    });
   };
 
   const newStories = bySearch(byCategory(stories.filter((s) => s.status === 'pending' && !s.read_at)));
