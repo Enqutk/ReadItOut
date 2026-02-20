@@ -706,26 +706,13 @@ export default function Dashboard() {
 
           {loading && activeFilter !== 'settings' ? (
             <div className="admin-loading">Loading…</div>
-          ) : activeFilter === 'settings' ? null : activeFilter === 'all' ? (
-            <div className="admin-kanban">
-              <div className="admin-column">
-                <h3>New</h3>
-                {newStories.map((s) => (
-                  <StoryCard
-                    key={s.id}
-                    story={s}
-                    selectable={canSelect}
-                    selected={selectedIds.has(s.id)}
-                    onToggle={() => toggleSelect(s.id)}
-                    onReject={() => setRejectingId(s.id)}
-                    showReject
-                  />
-                ))}
-                {newStories.length === 0 && <div className="admin-empty">No new stories</div>}
-              </div>
-            </div>
-          ) : (
+          ) : activeFilter === 'settings' ? null : (
             <div className="admin-list">
+              {activeFilter === 'all' && (
+                <p className="admin-hint admin-hint-inline">
+                  All stories by submission order. Use search or category to narrow down.
+                </p>
+              )}
               {activeFilter === 'featured' && (
                 <p className="admin-hint admin-hint-inline">
                   Stories with video links – kept here so you can contact fans if needed.
@@ -733,14 +720,14 @@ export default function Dashboard() {
               )}
               {filteredStories.map((s) => (
                 <StoryCard
-                    key={s.id}
-                    story={s}
-                    selectable={canSelect}
-                    selected={selectedIds.has(s.id)}
-                    onToggle={() => toggleSelect(s.id)}
-                    onReject={s.status === 'pending' ? () => setRejectingId(s.id) : null}
-                    showReject={s.status === 'pending'}
-                    showContact={!!s.youtube_link}
+                  key={s.id}
+                  story={s}
+                  selectable={canSelect}
+                  selected={selectedIds.has(s.id)}
+                  onToggle={() => toggleSelect(s.id)}
+                  onReject={s.status === 'pending' ? () => setRejectingId(s.id) : null}
+                  showReject={s.status === 'pending'}
+                  showContact={!!s.youtube_link}
                 />
               ))}
               {filteredStories.length === 0 && <div className="admin-empty">No stories</div>}
