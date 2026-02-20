@@ -354,7 +354,7 @@ export default function Dashboard() {
           )}
 
           {readingStory && (
-            <div className="admin-reject-modal" onClick={() => setReadingStory(null)}>
+            <div className="admin-reject-modal admin-read-story-overlay" onClick={() => setReadingStory(null)}>
               <div className="admin-read-story-box" onClick={(e) => e.stopPropagation()}>
                 <div className="admin-read-story-header">
                   <h4>Story #{readingStory.submission_number != null ? readingStory.submission_number : readingStory.id?.slice(0, 8)}</h4>
