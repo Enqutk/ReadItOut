@@ -67,12 +67,15 @@ export default function SubmitPage() {
   };
 
   if (done) {
-    const trackId = done.submission_number != null ? `#${done.submission_number}` : `#${done.id.slice(0, 8)}`;
+    const hasSequence = done.submission_number != null;
+    const trackId = hasSequence ? `#${done.submission_number}` : `#${done.id.slice(0, 8)}`;
     return (
       <main className="success-screen">
         <div className="success-icon">🎉</div>
         <h2 className="success-title">Story sent successfully!</h2>
-        <p className="success-id">Your submission {trackId} — save this to track it.</p>
+        <p className="success-id">
+          Your submission {trackId}. {hasSequence ? "That's your place in line — " : ""}Save this to track it.
+        </p>
         <p className="success-text">We&apos;ll notify you if it&apos;s featured in a video.</p>
         <Link href="/" className="link-back link-back-floating" aria-label="Back to Home">
           ← Back to Home
