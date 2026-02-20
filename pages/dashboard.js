@@ -753,7 +753,7 @@ export default function Dashboard() {
 }
 
 function StoryCard({ story, selectable, selected, onToggle, onReject, showReject, showContact }) {
-  const num = story.story_number != null ? story.story_number : null;
+  const num = story.submission_number != null ? story.submission_number : null;
   const contactHref = story.telegram_username
     ? `https://t.me/${story.telegram_username.replace(/^@/, '')}`
     : story.telegram_user_id
