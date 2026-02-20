@@ -126,10 +126,10 @@ button, a, input, select, textarea {
   opacity: 0.7;
 }
 
-/* Floating Back button – fixed on the right */
+/* Floating Back button – fixed on the right, below header */
 .link-back-floating {
   position: fixed;
-  top: 72px;
+  top: 96px;
   right: 16px;
   z-index: 50;
   display: inline-flex;
@@ -152,7 +152,7 @@ button, a, input, select, textarea {
 }
 @media (max-width: 768px) {
   .link-back-floating {
-    top: 80px;
+    top: 104px;
     right: 12px;
     padding: 10px 14px;
     font-size: 13px;
@@ -494,15 +494,19 @@ button, a, input, select, textarea {
 /* Submit page – professional form layout */
 .page-submit-wrap {
   min-height: 100vh;
-  padding: 20px 20px 32px;
+  padding: 64px 20px 24px;
   max-width: 440px;
   margin: 0 auto;
   background: linear-gradient(180deg, #fafafa 0%, #f5f4ff 100%);
+  display: flex;
+  flex-direction: column;
 }
 .page-submit-wrap .page-title {
   font-size: 22px;
   margin: 0 0 6px;
   text-align: center;
+  padding-right: 72px;
+  padding-left: 16px;
 }
 .page-submit-wrap .page-subtitle {
   font-size: 14px;
@@ -510,6 +514,14 @@ button, a, input, select, textarea {
   text-align: center;
   margin: 0 0 24px;
   line-height: 1.4;
+  padding-right: 72px;
+  padding-left: 16px;
+}
+@media (max-width: 768px) {
+  .page-submit-wrap {
+    padding-top: 72px;
+    padding-bottom: 20px;
+  }
 }
 .submit-form-card {
   background: #ffffff;
@@ -517,7 +529,9 @@ button, a, input, select, textarea {
   padding: 24px;
   box-shadow: 0 2px 16px rgba(79, 70, 229, 0.06), 0 0 0 1px rgba(219, 219, 219, 0.8);
   border: 1px solid rgba(219, 219, 219, 0.6);
-  margin-bottom: 20px;
+  margin-bottom: 16px;
+  flex: 1;
+  min-height: 0;
 }
 .submit-form-card .form-group {
   margin-bottom: 22px;
@@ -547,7 +561,7 @@ button, a, input, select, textarea {
   padding: 14px 16px;
   font-size: 15px;
   line-height: 1.5;
-  min-height: 160px;
+  min-height: 180px;
 }
 .submit-form-card .input-field::placeholder {
   color: #a8a8a8;
@@ -560,7 +574,7 @@ button, a, input, select, textarea {
   margin-top: 6px;
 }
 .submit-checkbox-wrap {
-  margin: 20px 0 24px;
+  margin: 0 0 20px;
 }
 .submit-checkbox-wrap .checkbox-label {
   padding: 12px 16px;
@@ -584,10 +598,31 @@ button, a, input, select, textarea {
   font-weight: 600;
   border-radius: 14px;
   margin-top: 0;
+  margin-bottom: 0;
 }
 .submit-cta:disabled {
   opacity: 0.7;
   cursor: not-allowed;
+}
+.page-submit-wrap form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+.page-submit-wrap .submit-form-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.page-submit-wrap .submit-form-card .form-group:last-of-type {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.page-submit-wrap .submit-form-card .form-group:last-of-type .input-field {
+  flex: 1;
+  min-height: 160px;
 }
 
 /* Popup (ads / events) */
