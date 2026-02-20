@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Lora:ital,wght@0;400;500;600;700&display=swap');
 
 * {
   box-sizing: border-box;
@@ -1217,61 +1217,76 @@ button, a, input, select, textarea {
 }
 .admin-reject-btn:hover { opacity: 0.9; }
 
-/* Read story popup */
+/* Read story popup – book vibe */
+.admin-reject-modal.admin-read-story-overlay {
+  background: rgba(30, 27, 45, 0.75);
+  backdrop-filter: blur(6px);
+}
 .admin-read-story-box {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  max-width: 420px;
+  background: linear-gradient(180deg, #fdfbf7 0%, #f8f5ef 100%);
+  border: 1px solid #e0d9cc;
+  border-radius: 4px;
+  max-width: 440px;
   width: 100%;
-  max-height: 85vh;
+  max-height: 88vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.04),
+    0 4px 6px -2px rgba(0, 0, 0, 0.08),
+    0 16px 40px -12px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  font-family: 'Lora', Georgia, 'Times New Roman', serif;
 }
 .admin-read-story-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--border);
+  padding: 18px 24px;
+  border-bottom: 1px solid #e8e2d8;
   flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.5);
 }
 .admin-read-story-header h4 {
   margin: 0;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
-  color: var(--accent-light);
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  letter-spacing: 0.02em;
+  color: #3d3a33;
 }
 .admin-read-story-close {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border: none;
-  background: transparent;
-  font-size: 24px;
+  background: rgba(0, 0, 0, 0.04);
+  font-size: 22px;
   line-height: 1;
-  color: var(--text-muted);
+  color: #6b6560;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 6px;
   padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background 0.2s, color 0.2s;
 }
 .admin-read-story-close:hover {
-  background: #f0f0f0;
-  color: var(--text);
+  background: rgba(0, 0, 0, 0.08);
+  color: #2d2a26;
 }
 .admin-read-story-meta {
-  padding: 10px 20px;
-  font-size: 13px;
-  color: var(--text-muted);
+  padding: 12px 24px;
+  font-size: 12px;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  color: #7a756d;
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid #e8e2d8;
   flex-shrink: 0;
+  letter-spacing: 0.02em;
 }
 .admin-read-story-category {
   text-transform: capitalize;
@@ -1280,43 +1295,126 @@ button, a, input, select, textarea {
   margin-left: auto;
 }
 .admin-read-story-body {
-  padding: 20px;
-  font-size: 15px;
-  line-height: 1.6;
-  color: var(--text);
+  padding: 28px 28px 32px;
+  font-size: 17px;
+  line-height: 1.75;
+  color: #2d2a26;
   white-space: pre-wrap;
   word-break: break-word;
   overflow-y: auto;
   flex: 1;
   min-height: 0;
+  font-family: 'Lora', Georgia, serif;
+  letter-spacing: 0.01em;
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.02);
 }
 .admin-read-story-actions {
-  padding: 16px 20px;
-  border-top: 1px solid var(--border);
+  padding: 16px 24px;
+  border-top: 1px solid #e8e2d8;
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   align-items: center;
   flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.6);
 }
 .admin-read-story-actions .story-link,
 .admin-read-story-actions .story-reject-btn,
 .admin-read-story-actions .admin-clear-btn {
   margin: 0;
 }
+
+/* Professional buttons – dashboard & read story */
 .story-read-btn {
-  padding: 8px 14px;
+  padding: 9px 16px;
   font-size: 13px;
   font-weight: 600;
-  background: rgba(79, 70, 229, 0.1);
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  letter-spacing: 0.02em;
+  background: linear-gradient(180deg, #ffffff 0%, #f8f7fc 100%);
   color: var(--accent);
-  border: 1px solid rgba(79, 70, 229, 0.3);
-  border-radius: var(--radius-sm);
+  border: 1px solid rgba(79, 70, 229, 0.25);
+  border-radius: 10px;
   cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 .story-read-btn:hover {
-  background: rgba(79, 70, 229, 0.18);
+  background: linear-gradient(180deg, #f8f7fc 0%, #f0eeff 100%);
+  border-color: rgba(79, 70, 229, 0.4);
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.12);
+}
+.story-reject-btn {
+  padding: 9px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  letter-spacing: 0.02em;
+  background: #ffffff;
+  color: var(--error);
+  border: 1px solid rgba(220, 38, 38, 0.35);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+.story-reject-btn:hover {
+  background: rgba(220, 38, 38, 0.06);
+  border-color: var(--error);
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.12);
+}
+.admin-read-story-actions .story-link {
+  padding: 9px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+.admin-read-story-actions .story-link:hover {
+  background: #f8f7fc;
   border-color: var(--accent);
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.1);
+}
+.admin-read-story-actions .admin-clear-btn {
+  padding: 9px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 10px;
+  margin-left: auto;
+}
+.admin-video-btn {
+  padding: 12px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.25);
+  transition: all 0.2s ease;
+}
+.admin-video-btn:hover:not(:disabled) {
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+}
+.admin-clear-btn {
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+.admin-reject-btn {
+  padding: 12px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(220, 38, 38, 0.2);
+  transition: all 0.2s ease;
+}
+.admin-reject-btn:hover {
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
 }
 
 .admin-settings { max-width: 480px; }
