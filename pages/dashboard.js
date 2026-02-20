@@ -12,6 +12,7 @@ export default function Dashboard() {
   const [linking, setLinking] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [rejectingId, setRejectingId] = useState(null);
+  const [readingStory, setReadingStory] = useState(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(null);
   const [rejectReason, setRejectReason] = useState('');
   const [initData, setInitData] = useState('');
@@ -346,6 +347,54 @@ export default function Dashboard() {
                   </button>
                   <button onClick={() => { setRejectingId(null); setRejectReason(''); }} className="admin-clear-btn">
                     Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {readingStory && (
+            <div className="admin-reject-modal" onClick={() => setReadingStory(null)}>
+              <div className="admin-read-story-box" onClick={(e) => e.stopPropagation()}>
+                <div className="admin-read-story-header">
+                  <h4>Story #{readingStory.submission_number != null ? readingStory.submission_number : readingStory.id?.slice(0, 8)}</h4>
+                  <button type="button" className="admin-read-story-close" onClick={() => setReadingStory(null)} aria-label="Close">
+                    ×
+                  </button>
+                </div>
+                <div className="admin-read-story-meta">
+                  <span>@{readingStory.telegram_username || readingStory.telegram_user_id || '—'}</span>
+                  {readingStory.category && <span className="admin-read-story-category">{readingStory.category}</span>}
+                  {readingStory.created_at && (
+                    <span className="admin-read-story-date">
+                      {new Date(readingStory.created_at).toLocaleDateString(undefined, { dateStyle: 'medium' })}
+                    </span>
+                  )}
+                </div>
+                <div className="admin-read-story-body">{readingStory.content}</div>
+                <div className="admin-read-story-actions">
+                  {readingStory.youtube_link && (
+                    <a href={readingStory.youtube_link} target="_blank" rel="noopener noreferrer" className="story-link">
+                      📺 Watch video
+                    </a>
+                  )}
+                  {(readingStory.telegram_username || readingStory.telegram_user_id) && (
+                    <a
+                      href={readingStory.telegram_username ? `https://t.me/${readingStory.telegram_username.replace(/^@/, '')}` : `tg://user?id=${readingStory.telegram_user_id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="story-link story-contact-link"
+                    >
+                      ✉️ Contact
+                    </a>
+                  )}
+                  {readingStory.status === 'pending' && (
+                    <button type="button" className="story-reject-btn" onClick={() => { setReadingStory(null); setRejectingId(readingStory.id); }}>
+                      Reject
+                    </button>
+                  )}
+                  <button type="button" className="admin-clear-btn" onClick={() => setReadingStory(null)}>
+                    Close
                   </button>
                 </div>
               </div>
@@ -731,6 +780,7 @@ export default function Dashboard() {
                   selected={selectedIds.has(s.id)}
                   onToggle={() => toggleSelect(s.id)}
                   onReject={s.status === 'pending' ? () => setRejectingId(s.id) : null}
+                  onReadStory={() => setReadingStory(s)}
                   showReject={s.status === 'pending'}
                   showContact={!!s.youtube_link}
                 />
@@ -744,7 +794,7 @@ export default function Dashboard() {
   );
 }
 
-function StoryCard({ story, selectable, selected, onToggle, onReject, showReject, showContact }) {
+function StoryCard({ story, selectable, selected, onToggle, onReject, onReadStory, showReject, showContact }) {
   const num = story.submission_number != null ? story.submission_number : null;
   const contactHref = story.telegram_username
     ? `https://t.me/${story.telegram_username.replace(/^@/, '')}`
@@ -768,6 +818,11 @@ function StoryCard({ story, selectable, selected, onToggle, onReject, showReject
           <span>@{story.telegram_username || story.telegram_user_id}</span>
         </div>
         <div className="story-card-actions">
+          {onReadStory && (
+            <button type="button" onClick={onReadStory} className="story-read-btn">
+              📖 Read story
+            </button>
+          )}
           {story.youtube_link && (
             <a href={story.youtube_link} target="_blank" rel="noopener noreferrer" className="story-link">
               📺 Watch video
