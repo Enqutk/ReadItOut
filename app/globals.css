@@ -1217,6 +1217,108 @@ button, a, input, select, textarea {
 }
 .admin-reject-btn:hover { opacity: 0.9; }
 
+/* Read story popup */
+.admin-read-story-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  max-width: 420px;
+  width: 100%;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+.admin-read-story-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.admin-read-story-header h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--accent-light);
+}
+.admin-read-story-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  font-size: 24px;
+  line-height: 1;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.admin-read-story-close:hover {
+  background: #f0f0f0;
+  color: var(--text);
+}
+.admin-read-story-meta {
+  padding: 10px 20px;
+  font-size: 13px;
+  color: var(--text-muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.admin-read-story-category {
+  text-transform: capitalize;
+}
+.admin-read-story-date {
+  margin-left: auto;
+}
+.admin-read-story-body {
+  padding: 20px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text);
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+.admin-read-story-actions {
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  flex-shrink: 0;
+}
+.admin-read-story-actions .story-link,
+.admin-read-story-actions .story-reject-btn,
+.admin-read-story-actions .admin-clear-btn {
+  margin: 0;
+}
+.story-read-btn {
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  background: rgba(79, 70, 229, 0.1);
+  color: var(--accent);
+  border: 1px solid rgba(79, 70, 229, 0.3);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.story-read-btn:hover {
+  background: rgba(79, 70, 229, 0.18);
+  border-color: var(--accent);
+}
+
 .admin-settings { max-width: 480px; }
 .admin-settings-section {
   margin-bottom: 24px;
