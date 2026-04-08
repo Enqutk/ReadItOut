@@ -1,11 +1,10 @@
-# Leyu & Mahi Fan Story Bot
+j# Leyu & Mahi Fan Story Bot
 
-A Telegram bot and mini app so fans can submit stories to **Leyu & Mahi**. The creators review submissions, feature the best ones in videos, and notify fans—all from one place.
+A Telegram bot and mini app so fans can submit stories to **Leyu&Mahi**. The creators review submissions, feature the best ones in videos, and notify fans—all from one place.
 
 ---
 
 ## The idea
-
 **Leyu & Mahi** are creators who want to turn fan stories into content. This project gives them:
 
 - **A single Telegram bot** where fans open a mini app, submit stories, and track their submission with a simple number (e.g. *Submission #42*).
